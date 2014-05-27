@@ -10,12 +10,12 @@ Tests for `cmsplugin-imagesift` models module.
 
 import os
 import shutil
-import unittest
+from django.test import TestCase
 
 from imagesift import models
 
 
-class TestImagesift(unittest.TestCase):
+class TestImagesift(TestCase):
 
     def setUp(self):
         pass
@@ -25,3 +25,16 @@ class TestImagesift(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+
+class TestImagesiftDependencies(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_imagestore_available(self):
+        assert False
+
+    def tearDown(self):
+        pass
+    
