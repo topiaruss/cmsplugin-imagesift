@@ -1,11 +1,10 @@
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
+from django.utils.translation import ugettext_lazy as _
 from .models import GalleryPlugin
 from imagestore.models import Image
 from tagging.models import TaggedItem
 
-
-from django.utils.translation import ugettext_lazy as _
 
 class ImagesiftPlugin(CMSPluginBase):
     model = GalleryPlugin
@@ -17,7 +16,7 @@ class ImagesiftPlugin(CMSPluginBase):
         images = TaggedItem.objects.get_by_model(Image, [filter])
         context.update({
             'images':images,
-            'object':instance,
+            'instance':instance,
             'placeholder':placeholder
         })
         return context
