@@ -1,3 +1,14 @@
 django>=1.5.1
 wheel==0.23.0
 # Additional requirements go here
+
+-e git+git://github.com/topiaruss/imagestore.git#egg=imagestoredev
+
+# Imagestore's own deps
+Pillow
+South
+django-autocomplete-light
+django-tagging
+sorl-thumbnail
+lxml
+
