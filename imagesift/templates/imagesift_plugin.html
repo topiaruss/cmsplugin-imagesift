@@ -5,10 +5,9 @@
 {% for image in images %}
     <div class='image-preview'>
     {% thumbnail image.image "120x120" crop="center" as im %}
-        <a class="thumb" href="{{ image.image.url }}">
+        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}">
             <img class="preview" {% if image.title %} alt="{{ image.title }}" {% endif %} src="{{ im.url }}">
         </a>
-        {% comment %}
         <a href="{{ image.get_absolute_url }}">
             {% if image.title %}
                 <br><span class='image-title'>{{ image.title }}</span>
@@ -17,7 +16,10 @@
 
             {% endif %}
         </a>
-        {% endcomment %}
+
+         <br><span class='sifter-id'>{{ instance.id }}</span>
+
+
     {% endthumbnail %}
     </div>
 {% endfor %}
