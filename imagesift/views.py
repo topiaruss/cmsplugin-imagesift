@@ -1,6 +1,7 @@
 from django.views.generic import DetailView
 
 from .models import GalleryPlugin
+from imagestore.models import Image
 
 
 class ImageView(DetailView):
@@ -30,4 +31,5 @@ class ImageView(DetailView):
             context.update(prev=prev, next=next, gall_plugin=plugin)
         except:
             pass
+        
         return context
