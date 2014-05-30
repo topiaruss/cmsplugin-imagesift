@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cms.test_utils.testcases import CMSTestCase
-from django.core.files import File
-from django.test import TestCase
-from django.test.utils import override_settings
-
-from imagestore.models import (Album, Image)
-from imagesift.cms_plugins import ImagesiftPlugin
-from imagesift.models import GalleryPlugin
 import os
 
+from cms.test_utils.testcases import CMSTestCase
+from django.core.files import File
+from django.test.utils import override_settings
+from imagestore.models import (Album, Image)
+from cms.api import add_plugin
+from cms.models import Placeholder
 
-class ImagesiftPluginFilterTest(TestCase):
+from imagesift.cms_plugins import ImagesiftPlugin
+from imagesift.models import GalleryPlugin
+
+class ImagesiftPluginFilterTest(CMSTestCase):
 
     def setUp(self):
         self.image_file = open(os.path.join(os.path.dirname(__file__), 'test_img.jpg'))
@@ -32,45 +33,18 @@ class ImagesiftPluginFilterTest(TestCase):
         gall_row = GalleryPlugin(filter='alpha')
         gall_row.save()
         gall = ImagesiftPlugin()
-        ret = gall.render({}, gall_row, 'xxx')
+        ret = gall.render(self.get_context(path='/'), gall_row, 'xxx')
         self.assertEqual(len(ret['images']), 1)
 
     def test_multi_filter(self):
         gall_row = GalleryPlugin(filter='rho')
         gall_row.save()
         gall = ImagesiftPlugin()
-        ret = gall.render({}, gall_row, 'xxx')
+        ret = gall.render(self.get_context(path='/'), gall_row, 'xxx')
         self.assertEqual(len(ret['images']), self.image_count)
 
 
-class ImagesiftRenderTest(TestCase):
-
-    def setUp(self):
-        self.plugin = ImagesiftPlugin()
-
-        self.image_file = open(os.path.join(os.path.dirname(__file__), 'test_img.jpg'))
-        details = (
-            ('i1', 'alpha            rho'),
-            ('i2', '      beta       rho'),
-            ('i3', '           gamma rho'),
-        )
-        self.image_count = len(details)
-        for title, tags in details:
-            Image(title=title, image=File(self.image_file), tags=tags).save()
-
-    def test_plugin(self):
-        # I'd love this to test rendered html, but see
-        #   https://github.com/divio/django-cms/issues/3214
-        context = {}
-        instance = GalleryPlugin(filter='alpha')
-        instance.save()
-        out_context = self.plugin.render(context, instance, None)
-        self.assertEqual('i1', out_context['images'][0].title)
-
-from cms.api import add_plugin
-from cms.models import Placeholder
-
-class ImagesiftRenderTest2(TestCase):
+class ImagesiftRenderTest(CMSTestCase):
 
     def setUp(self):
         self.plugin = ImagesiftPlugin()
@@ -95,7 +69,7 @@ class ImagesiftRenderTest2(TestCase):
           filter='alpha'
         )
         plugin_instance = model_instance.get_plugin_class_instance()
-        context = plugin_instance.render({}, model_instance, None)
+        context = plugin_instance.render(self.get_context(path='/'), model_instance, None)
         self.assertEqual('i1', context['images'][0].title)
 
     def test_plugin_html(self):
@@ -106,7 +80,7 @@ class ImagesiftRenderTest2(TestCase):
           'en',
           filter='alpha'
          )
-        html = model_instance.render_plugin({})
+        html = model_instance.render_plugin(self.get_context(path='/'))
         self.assertIn('i1', html)
 
 
