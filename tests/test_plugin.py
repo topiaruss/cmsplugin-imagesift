@@ -44,6 +44,7 @@ class ImagesiftPluginFilterTest(CMSTestCase):
         self.assertEqual(len(ret['images']), self.image_count)
 
 
+@override_settings(ROOT_URLCONF='tests.test_urls')
 class ImagesiftRenderTest(CMSTestCase):
 
     def setUp(self):
@@ -84,7 +85,7 @@ class ImagesiftRenderTest(CMSTestCase):
         self.assertIn('i1', html)
 
 
-@override_settings(ROOT_URLCONF='imagesift.tests.test_urls')
+@override_settings(ROOT_URLCONF='test_urls')
 class ImagesiftTests(CMSTestCase):
 
     def test_gallery_page(self):
