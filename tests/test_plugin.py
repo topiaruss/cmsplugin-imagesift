@@ -2,18 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from cms.test_utils.testcases import CMSTestCase
-from django.contrib.auth.models import User
 from django.core.files import File
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from django.test.client import Client
-from django.core.urlresolvers import reverse
-from imagestore.models import *
-from lxml import html
-from tagging.models import Tag, TaggedItem
-from tagging.fields import TagField
-from imagesift.cms_plugins import ImagesiftPlugin, GalleryPlugin
+from imagestore.models import (Album, Image)
+from imagesift.cms_plugins import ImagesiftPlugin
+from imagesift.models import GalleryPlugin
 import os
 
 
@@ -71,6 +66,49 @@ class ImagesiftRenderTest(TestCase):
         instance.save()
         out_context = self.plugin.render(context, instance, None)
         self.assertEqual('i1', out_context['images'][0].title)
+
+from cms.api import add_plugin
+from cms.models import Placeholder
+
+class ImagesiftRenderTest2(TestCase):
+
+    def setUp(self):
+        self.plugin = ImagesiftPlugin()
+
+        self.image_file = open(os.path.join(os.path.dirname(__file__), 'test_img.jpg'))
+        details = (
+            ('i1', 'alpha            rho'),
+            ('i2', '      beta       rho'),
+            ('i3', '           gamma rho'),
+        )
+        self.image_count = len(details)
+        for title, tags in details:
+            Image(title=title, image=File(self.image_file), tags=tags).save()
+
+
+    def test_plugin_context(self):
+        placeholder = Placeholder.objects.create(slot='test')
+        model_instance = add_plugin(
+          placeholder,
+          ImagesiftPlugin,
+          'en',
+          filter='alpha'
+        )
+        plugin_instance = model_instance.get_plugin_class_instance()
+        context = plugin_instance.render({}, model_instance, None)
+        self.assertEqual('i1', context['images'][0].title)
+
+    def test_plugin_html(self):
+        placeholder = Placeholder.objects.create(slot='test')
+        model_instance = add_plugin(
+          placeholder,
+          ImagesiftPlugin,
+          'en',
+          filter='alpha'
+         )
+        html = model_instance.render_plugin({})
+        self.assertIn('i1', html)
+
 
 @override_settings(ROOT_URLCONF='imagesift.tests.test_urls')
 class ImagesiftTests(CMSTestCase):
