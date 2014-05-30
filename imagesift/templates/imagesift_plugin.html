@@ -1,7 +1,23 @@
-<ul>
-    {% for image in images %}
-    <li>
-        {{ image.title }}
-    </li>
-    {% endfor %}
-</ul>
+{% load i18n %}
+{% load thumbnail %}
+{% load url from future %}
+
+{% for image in images %}
+    <div class='image-preview'>
+    {% thumbnail image.image "120x120" crop="center" as im %}
+        <a class="thumb" href="{{ image.image.url }}">
+            <img class="preview" {% if image.title %} alt="{{ image.title }}" {% endif %} src="{{ im.url }}">
+        </a>
+        {% comment %}
+        <a href="{{ image.get_absolute_url }}">
+            {% if image.title %}
+                <br><span class='image-title'>{{ image.title }}</span>
+            {% else %}
+                <br><span class='image-title'>{% trans 'Info' %}</span>
+
+            {% endif %}
+        </a>
+        {% endcomment %}
+    {% endthumbnail %}
+    </div>
+{% endfor %}
