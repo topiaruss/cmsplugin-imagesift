@@ -1,5 +1,39 @@
 {% load i18n %}
+{% load thumbnail %}
 {% load url from future %}
 
-<h1> ASDF </h1>
-{{ object }}
+{# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+{% thumbnail image.image "600x300" crop="center" as im %}
+
+    <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %}>
+
+{% endthumbnail %}
+
+<ul>
+
+    {% if prev != None %}
+        <li class="prev">
+            <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
+                ← {% trans "previous" %} {{ prev.title }}</a>
+        </li>
+    {% endif %}
+
+    {% if next != None %}
+        <li class="next">
+            <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
+                {% trans "next" %} {{ next.title }} →</a>
+        </li>
+    {% endif %}
+
+    {# the back mechanism can only resolve back to the original page, not a specific gallery on that page #}
+    {% if back %}
+        <li class="back">
+            <a href="{{ back }}" >
+                {% trans "back to gallery" %}
+            </a>
+        </li>
+    {% endif %}
+
+</ul>
+
+
