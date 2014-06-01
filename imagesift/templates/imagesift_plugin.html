@@ -7,7 +7,7 @@
     <li class='image-preview'>
 
         {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-        {% thumbnail image.image "100x100" crop="center" as im %}
+        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
             <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
                 <img class="preview" src="{{ im.url }}"

@@ -12,10 +12,15 @@ class ImagesiftPlugin(CMSPluginBase):
 
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
+        limit = instance.thumbnail_limit
+        qs = instance.get_images_queryset()
+        if limit:
+            qs = qs[:limit]
+
         context.update({
-            'images':instance.get_images_queryset(),
-            'instance':instance,
-            'placeholder':placeholder,
+            'images': qs,
+            'instance': instance,
+            'placeholder': placeholder,
             'url':url,
         })
         return context

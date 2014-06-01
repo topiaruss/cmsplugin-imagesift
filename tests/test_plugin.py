@@ -67,7 +67,10 @@ class ImagesiftRenderTest(CMSTestCase):
           placeholder,
           ImagesiftPlugin,
           'en',
-          filter='alpha'
+          filter='alpha',
+          thumbnail_geometry='40x30',  # from http://sorl-thumbnail.readthedocs.org/en/latest/template.html#geometry
+          thumbnail_limit=10,
+          image_geometry='200x180',  # ditto
         )
         plugin_instance = model_instance.get_plugin_class_instance()
         context = plugin_instance.render(self.get_context(path='/'), model_instance, None)
