@@ -46,3 +46,4 @@ docs/_build
 
 #For testing
 imagestore/
+cache/

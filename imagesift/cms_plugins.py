@@ -1,9 +1,8 @@
+from django.utils.translation import ugettext_lazy as _
+
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
-from django.utils.translation import ugettext_lazy as _
 from .models import GalleryPlugin
-from imagestore.models import Image
-from tagging.models import TaggedItem
 
 
 class ImagesiftPlugin(CMSPluginBase):
@@ -12,12 +11,12 @@ class ImagesiftPlugin(CMSPluginBase):
     render_template = "imagesift_plugin.html"
 
     def render(self, context, instance, placeholder):
-        filter = instance.filter
-        images = TaggedItem.objects.get_by_model(Image, [filter])
+        url = context['request'].get_full_path()
         context.update({
-            'images':images,
-            'instance':instance,
-            'placeholder':placeholder
+            'images': instance.get_images_queryset(),
+            'instance': instance,
+            'placeholder': placeholder,
+            'url':url,
         })
         return context
 

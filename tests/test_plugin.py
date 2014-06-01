@@ -1,23 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cms.test_utils.testcases import CMSTestCase
-from django.contrib.auth.models import User
-from django.core.files import File
-from django.test import TestCase
-from django.test.utils import override_settings
-
-from django.test.client import Client
-from django.core.urlresolvers import reverse
-from imagestore.models import *
-from lxml import html
-from tagging.models import Tag, TaggedItem
-from tagging.fields import TagField
-from imagesift.cms_plugins import ImagesiftPlugin, GalleryPlugin
 import os
 
+from cms.test_utils.testcases import CMSTestCase
+from django.core.files import File
+from django.test.utils import override_settings
+from imagestore.models import (Album, Image)
+from cms.api import add_plugin
+from cms.models import Placeholder
 
-class ImagesiftPluginFilterTest(TestCase):
+from imagesift.cms_plugins import ImagesiftPlugin
+from imagesift.models import GalleryPlugin
+
+class ImagesiftPluginFilterTest(CMSTestCase):
 
     def setUp(self):
         self.image_file = open(os.path.join(os.path.dirname(__file__), 'test_img.jpg'))
@@ -37,18 +33,19 @@ class ImagesiftPluginFilterTest(TestCase):
         gall_row = GalleryPlugin(filter='alpha')
         gall_row.save()
         gall = ImagesiftPlugin()
-        ret = gall.render({}, gall_row, 'xxx')
+        ret = gall.render(self.get_context(path='/'), gall_row, 'xxx')
         self.assertEqual(len(ret['images']), 1)
 
     def test_multi_filter(self):
         gall_row = GalleryPlugin(filter='rho')
         gall_row.save()
         gall = ImagesiftPlugin()
-        ret = gall.render({}, gall_row, 'xxx')
+        ret = gall.render(self.get_context(path='/'), gall_row, 'xxx')
         self.assertEqual(len(ret['images']), self.image_count)
 
 
-class ImagesiftRenderTest(TestCase):
+@override_settings(ROOT_URLCONF='tests.test_urls')
+class ImagesiftRenderTest(CMSTestCase):
 
     def setUp(self):
         self.plugin = ImagesiftPlugin()
@@ -63,16 +60,37 @@ class ImagesiftRenderTest(TestCase):
         for title, tags in details:
             Image(title=title, image=File(self.image_file), tags=tags).save()
 
-    def test_plugin(self):
-        # I'd love this to test rendered html, but see
-        #   https://github.com/divio/django-cms/issues/3214
-        context = {}
-        instance = GalleryPlugin(filter='alpha')
-        instance.save()
-        out_context = self.plugin.render(context, instance, None)
-        self.assertEqual('i1', out_context['images'][0].title)
 
-@override_settings(ROOT_URLCONF='imagesift.tests.test_urls')
+    def test_plugin_context(self):
+        placeholder = Placeholder.objects.create(slot='test')
+        model_instance = add_plugin(
+          placeholder,
+          ImagesiftPlugin,
+          'en',
+          filter='alpha',
+          thumbnail_geometry='40x30',  # from http://sorl-thumbnail.readthedocs.org/en/latest/template.html#geometry
+          thumbnail_limit=10,
+          image_geometry='200x180',  # ditto
+        )
+        plugin_instance = model_instance.get_plugin_class_instance()
+        context = plugin_instance.render(self.get_context(path='/'), model_instance, None)
+        im1 = context['images'][0]
+        self.assertEqual('i1', im1.title)
+        self.assertEqual('40', plugin_instance.thumbnail)
+
+    def test_plugin_html(self):
+        placeholder = Placeholder.objects.create(slot='test')
+        model_instance = add_plugin(
+          placeholder,
+          ImagesiftPlugin,
+          'en',
+          filter='alpha'
+         )
+        html = model_instance.render_plugin(self.get_context(path='/'))
+        self.assertIn('i1', html)
+
+
+@override_settings(ROOT_URLCONF='test_urls')
 class ImagesiftTests(CMSTestCase):
 
     def test_gallery_page(self):

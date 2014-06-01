@@ -2,22 +2,33 @@
 {% load thumbnail %}
 {% load url from future %}
 
+<ul>
 {% for image in images %}
-    <div class='image-preview'>
-    {% thumbnail image.image "120x120" crop="center" as im %}
-        <a class="thumb" href="{{ image.image.url }}">
-            <img class="preview" {% if image.title %} alt="{{ image.title }}" {% endif %} src="{{ im.url }}">
-        </a>
-        {% comment %}
-        <a href="{{ image.get_absolute_url }}">
+    <li class='image-preview'>
+
+        {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+
+            <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
+                <img class="preview" src="{{ im.url }}"
+                {% if image.title %}
+                  alt="{{ image.title }}"
+                {% endif %}
+                data-title="{{ image.title }}"
+                data-description="{{ image.description }}"
+                data-tags={{ image.tags }}
+                >
+            </a>
+
+            {# This is just to show use of trans tag #}
             {% if image.title %}
                 <br><span class='image-title'>{{ image.title }}</span>
             {% else %}
-                <br><span class='image-title'>{% trans 'Info' %}</span>
-
+                <br><span class='image-title'>{% trans 'untitled' %}</span>
             {% endif %}
-        </a>
-        {% endcomment %}
-    {% endthumbnail %}
-    </div>
+
+        {% endthumbnail %}
+
+    </li>
 {% endfor %}
+</ul>
