@@ -1,20 +1,34 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from cms.models.pluginmodel import CMSPlugin
 from imagestore.models import Image
 from tagging.models import TaggedItem
 
 
+
 class GalleryPlugin(CMSPlugin):
-    filter = models.TextField()
-    thumbnail_geometry = models.CharField(max_length=50)
-    image_geometry = models.CharField(max_length=50)
-    thumbnail_limit = models.IntegerField(default=0)  # 0 means no limit
+    thumbnail_geometry = models.CharField(max_length=50, default='50x50',
+                                          help_text=_('Examples: "50x30", "50", "x30"'))
+    thumbnail_limit = models.IntegerField(default=0,
+                                          help_text=_('Maximum count of items to show. 0 means no limit.'))
+    image_geometry = models.CharField(max_length=50, default='300x200',
+                                      help_text=_('Examples: "600x400", "600", "x400"'))
+    filter = models.TextField(help_text=_('Items matching ALL these tags will be shown. One tag per line.'))
+
 
     def get_images_queryset(self):
-        return TaggedItem.objects.get_by_model(Image, [self.filter])
+        """
+        The universal queryset generator for the plugin
+        """
+        tags = self.filter.splitlines()
+        tags = [t.strip() for t in tags]
+        images = TaggedItem.objects.get_by_model(Image, tags)
+        # temporarily order by the date added to the imagestore, later by exif image date?
+        images = images.order_by('created')
+        return images
 
     def get_immediate_neighbours(self, image):
         """
