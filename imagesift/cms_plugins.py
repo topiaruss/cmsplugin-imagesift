@@ -13,9 +13,9 @@ class ImagesiftPlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
         context.update({
-            'images':instance.get_images_queryset(),
-            'instance':instance,
-            'placeholder':placeholder,
+            'images': instance.get_images_queryset(),
+            'instance': instance,
+            'placeholder': placeholder,
             'url':url,
         })
         return context

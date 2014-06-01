@@ -9,6 +9,9 @@ from tagging.models import TaggedItem
 
 class GalleryPlugin(CMSPlugin):
     filter = models.TextField()
+    thumbnail_geometry = models.CharField(max_length=50)
+    image_geometry = models.CharField(max_length=50)
+    thumbnail_limit = models.IntegerField(default=0)  # 0 means no limit
 
     def get_images_queryset(self):
         return TaggedItem.objects.get_by_model(Image, [self.filter])
