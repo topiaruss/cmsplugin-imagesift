@@ -74,9 +74,7 @@ class ImagesiftRenderTest(CMSTestCase):
         )
         plugin_instance = model_instance.get_plugin_class_instance()
         context = plugin_instance.render(self.get_context(path='/'), model_instance, None)
-        im1 = context['images'][0]
-        self.assertEqual('i1', im1.title)
-        self.assertEqual('40', plugin_instance.thumbnail)
+        self.assertEqual('i1', context['images'][0].title)
 
     def test_plugin_html(self):
         placeholder = Placeholder.objects.create(slot='test')
