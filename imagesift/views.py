@@ -17,19 +17,29 @@ class ImageView(DetailView):
         back = self.request.GET.get('back')
         context.update(back=back)
 
-        # compute the prev and next, returning None for one/both, as appropriate
+        # need default geometry, in case detail invoked without a gall argument
+        geometry = '500x400'
+
         try:
             prev = next = None
 
             # plugin is essential for all that follows in the try:
             gall_pk = int(self.request.GET['gall'])
             plugin = GalleryPlugin.objects.get(pk=gall_pk)
+
+            # compute the prev and next, returning None for one/both, as appropriate
             image = kwargs['object']
             prev, next = plugin.get_immediate_neighbours(image)
+
+            # get geometry
+            geometry = plugin.image_geometry
 
             # and stash all in the context
             context.update(prev=prev, next=next, gall_plugin=plugin)
         except:
             pass
-        
+
+        # set the default, or the setting from the instance
+        context.update(geometry=geometry)
+
         return context

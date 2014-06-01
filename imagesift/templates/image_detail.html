@@ -3,7 +3,7 @@
 {% load url from future %}
 
 {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-{% thumbnail image.image "600x300" crop="center" as im %}
+{% thumbnail image.image geometry crop="center" as im %}
 
     <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %}>
 
