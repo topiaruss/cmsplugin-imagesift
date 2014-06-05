@@ -1,0 +1,2 @@
+from gallery import GalleryPlugin
+
