@@ -15,8 +15,7 @@ class Image(BaseImage):
         verbose_name_plural = _('Images')
         app_label = 'imagesift'
 
-    album = models.ForeignKey('imagesift.Album', verbose_name=_('Album'), null=True, blank=True, related_name='images')
-
+    album = models.ForeignKey('imagestore.Album', verbose_name=_('Album'), null=True, blank=True, related_name='images')
     video_url = models.URLField(_('Video URL'), default='')
 
     def has_video(self):

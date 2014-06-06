@@ -19,31 +19,14 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='images', null=True, to=orm['auth.User'])),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, null=True, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, null=True, blank=True)),
-            ('album', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='images', null=True, to=orm['imagesift.Album'])),
             ('video_url', self.gf('django.db.models.fields.URLField')(default='', max_length=200)),
         ))
         db.send_create_signal('imagesift', ['Image'])
-
-        # Adding model 'Album'
-        db.create_table(u'imagesift_album', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='albums', null=True, to=orm['auth.User'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('is_public', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('order', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('head', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='head_of', null=True, on_delete=models.SET_NULL, to=orm['imagesift.Image'])),
-        ))
-        db.send_create_signal('imagesift', ['Album'])
 
 
     def backwards(self, orm):
         # Deleting model 'Image'
         db.delete_table(u'imagesift_image')
-
-        # Deleting model 'Album'
-        db.delete_table(u'imagesift_album')
 
 
     models = {
@@ -104,17 +87,6 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'imagesift.album': {
-            'Meta': {'ordering': "('order', 'created', 'name')", 'object_name': 'Album'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'head': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'head_of'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': "orm['imagesift.Image']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'albums'", 'null': 'True', 'to': u"orm['auth.User']"})
-        },
         'imagesift.galleryplugin': {
             'Meta': {'object_name': 'GalleryPlugin', '_ormbases': ['cms.CMSPlugin']},
             u'cmsplugin_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['cms.CMSPlugin']", 'unique': 'True', 'primary_key': 'True'}),
@@ -125,7 +97,6 @@ class Migration(SchemaMigration):
         },
         'imagesift.image': {
             'Meta': {'ordering': "('order', 'id')", 'object_name': 'Image'},
-            'album': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'images'", 'null': 'True', 'to': "orm['imagesift.Album']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
