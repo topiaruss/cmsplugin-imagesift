@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models.pluginmodel import CMSPlugin
-from imagesift.models import Image
+from imagestore.models import Image
 from tagging.models import TaggedItem
 
 
