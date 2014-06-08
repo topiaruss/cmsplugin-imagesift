@@ -9,9 +9,45 @@
 
 {% endthumbnail %}
 <br>
-Here's the EXIF data. Better access coming soon
+
+<dl>
+  <dt>Title:</dt>
+  <dd>{{ image.title }}</dd>
+  <dt>Description:</dt>
+  <dd>{{ image.description }}</dd>
+</dl>
+
+Here's the data...
+
 <br>
-{{ image.exif }}
+<dl>
+  <dt>Artist:</dt>
+  <dd>{{ image.overrideable_photographer }}</dd>
+  <dt>Event:</dt>
+  <dd>{{ image.event_name }}</dd>
+  <dt>Date:</dt>
+  <dd>{{ image.overrideable_date }}</dd>
+  <dt>Make:</dt>
+  <dd>{{ image.exif_by_block.Image.Make }}</dd>
+  <dt>Model:</dt>
+  <dd>{{ image.exif_by_block.Image.Model }}</dd>
+  <dt>Exposure Time:</dt>
+  <dd>{{ image.exif_by_block.EXIF.ExposureTime }}</dd>
+  <dt>Aperture:</dt>
+  <dd>{{ image.exif_by_block.EXIF.ApertureValue }}</dd>
+  <dt>ISO Speed:</dt>
+  <dd>{{ image.exif_by_block.EXIF.ISOSpeedRatings }}</dd>
+  <dt>Metering Mode:</dt>
+  <dd>{{ image.exif_by_block.EXIF.MeteringMode }}</dd>
+  <dt>Flash:</dt>
+  <dd>{{ image.exif_by_block.EXIF.Flash }}</dd>
+  <dt>Focal Length:</dt>
+  <dd>{{ image.exif_by_block.EXIF.FocalLength }}</dd>
+</dl>
+
+{% comment %}
+        Below are next & prev links, and a back to gallery, if the gallery page was passed in the url
+{% endcomment %}
 
 <ul>
 

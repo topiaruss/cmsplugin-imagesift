@@ -10,6 +10,15 @@ class ImagesiftPlugin(CMSPluginBase):
     name = _('Imagesift Plugin')
     render_template = "imagesift_plugin.html"
 
+    def date_digest(self, images):
+        """
+        return a list of unique dates, for all the images passed
+        """
+        dates = {}
+        for i in images:
+            dates.setdefault(i.overrideable_date().date(), None)
+        return sorted(dates.keys())
+
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
         limit = instance.thumbnail_limit
@@ -18,6 +27,7 @@ class ImagesiftPlugin(CMSPluginBase):
             qs = qs[:limit]
 
         context.update({
+            'dates': [d.isoformat() for d in self.date_digest(qs)],
             'images': qs,
             'instance': instance,
             'placeholder': placeholder,
