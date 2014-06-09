@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils.translation import ugettext_lazy as _
 
 from cms.plugin_base import CMSPluginBase
@@ -21,13 +23,21 @@ class ImagesiftPlugin(CMSPluginBase):
 
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
+        date = context['request'].GET.get('date')
         limit = instance.thumbnail_limit
         qs = instance.get_images_queryset()
         if limit:
             qs = qs[:limit]
+        filtered = False
+        if date:
+            date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            qs = list(qs)
+            qs = [i for i in qs if i.overrideable_date().date() == date]
+            filtered = _('The set of images is filtered to %s' % unicode(date))
 
         context.update({
             'dates': [d.isoformat() for d in self.date_digest(qs)],
+            'filtered':filtered,
             'images': qs,
             'instance': instance,
             'placeholder': placeholder,
