@@ -1,0 +1,15 @@
+/* imagesift.css */
+
+/* Grouping here the styles for all templates in the plugin*/
+
+.imagesift-list{
+    background-color: #dddddd;
+    margin: 2em;
+    padding: 1em;
+}
+
+.imagesift-detail{
+    background-color: #eeeeee;
+    margin: 2em;
+    padding: 1em;
+}

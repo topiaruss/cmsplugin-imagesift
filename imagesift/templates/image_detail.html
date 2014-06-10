@@ -1,79 +1,112 @@
+{% extends "base.html" %}
 {% load i18n %}
 {% load thumbnail %}
 {% load url from future %}
+{% load sekizai_tags %}
 
-{# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-{% thumbnail image.image geometry crop="center" as im %}
+{% block title %}
+        {% if image.title %}
+            {{ image.title }}
+        {% else %}
+            image
+        {% endif %}
 
-    <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %}>
+        {% if image.overrideable_photographer %}
+            {% trans "by" %}{{ image.overrideable_photographer }}
+        {% endif %}
+{% endblock title %}
 
-{% endthumbnail %}
-<br>
+{% block content %}
 
-<dl>
-  <dt>Title:</dt>
-  <dd>{{ image.title }}</dd>
-  <dt>Description:</dt>
-  <dd>{{ image.description }}</dd>
-</dl>
+    {# Sekizai makes us put these Addtoblocks INSIDE the block content tag #}
 
-Here's the data...
+    {% addtoblock "css" %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
+        <style type="text/css">
+            /* css for this detail template only*/
+        </style>
+    {% endaddtoblock %}
 
-<br>
-<dl>
-  <dt>Artist:</dt>
-  <dd>{{ image.overrideable_photographer }}</dd>
-  <dt>Event:</dt>
-  <dd>{{ image.event_name }}</dd>
-  <dt>Date:</dt>
-  <dd>{{ image.overrideable_date }}</dd>
-  <dt>Make:</dt>
-  <dd>{{ image.exif_by_block.Image.Make }}</dd>
-  <dt>Model:</dt>
-  <dd>{{ image.exif_by_block.Image.Model }}</dd>
-  <dt>Exposure Time:</dt>
-  <dd>{{ image.exif_by_block.EXIF.ExposureTime }}</dd>
-  <dt>Aperture:</dt>
-  <dd>{{ image.exif_by_block.EXIF.ApertureValue }}</dd>
-  <dt>ISO Speed:</dt>
-  <dd>{{ image.exif_by_block.EXIF.ISOSpeedRatings }}</dd>
-  <dt>Metering Mode:</dt>
-  <dd>{{ image.exif_by_block.EXIF.MeteringMode }}</dd>
-  <dt>Flash:</dt>
-  <dd>{{ image.exif_by_block.EXIF.Flash }}</dd>
-  <dt>Focal Length:</dt>
-  <dd>{{ image.exif_by_block.EXIF.FocalLength }}</dd>
-</dl>
+    {% addtoblock "js" %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
+        <script type="text/javascript">
+            /* js for this template only */
+        </script>
+    {% endaddtoblock %}
 
-{% comment %}
-        Below are next & prev links, and a back to gallery, if the gallery page was passed in the url
-{% endcomment %}
+    <div class="imagesift-detail">
+        {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+        {% thumbnail image.image geometry crop="center" as im %}
 
-<ul>
+            <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %}>
 
-    {% if prev != None %}
-        <li class="prev">
-            <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
-                ← {% trans "previous" %} {{ prev.title }}</a>
-        </li>
-    {% endif %}
+        {% endthumbnail %}
+        <br>
 
-    {% if next != None %}
-        <li class="next">
-            <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
-                {% trans "next" %} {{ next.title }} →</a>
-        </li>
-    {% endif %}
+        <dl>
+          <dt>Title:</dt>
+          <dd>{{ image.title }}</dd>
+          <dt>Description:</dt>
+          <dd>{{ image.description }}</dd>
+        </dl>
 
-    {# the back mechanism can only resolve back to the original page, not a specific gallery on that page #}
-    {% if back %}
-        <li class="back">
-            <a href="{{ back }}" >
-                {% trans "back to gallery" %}
-            </a>
-        </li>
-    {% endif %}
+        Here's the data...
 
-</ul>
+        <br>
+        <dl>
+          <dt>Artist:</dt>
+          <dd>{{ image.overrideable_photographer }}</dd>
+          <dt>Event:</dt>
+          <dd>{{ image.event_name }}</dd>
+          <dt>Date:</dt>
+          <dd>{{ image.overrideable_date }}</dd>
+          <dt>Make:</dt>
+          <dd>{{ image.exif_by_block.Image.Make }}</dd>
+          <dt>Model:</dt>
+          <dd>{{ image.exif_by_block.Image.Model }}</dd>
+          <dt>Exposure Time:</dt>
+          <dd>{{ image.exif_by_block.EXIF.ExposureTime }}</dd>
+          <dt>Aperture:</dt>
+          <dd>{{ image.exif_by_block.EXIF.ApertureValue }}</dd>
+          <dt>ISO Speed:</dt>
+          <dd>{{ image.exif_by_block.EXIF.ISOSpeedRatings }}</dd>
+          <dt>Metering Mode:</dt>
+          <dd>{{ image.exif_by_block.EXIF.MeteringMode }}</dd>
+          <dt>Flash:</dt>
+          <dd>{{ image.exif_by_block.EXIF.Flash }}</dd>
+          <dt>Focal Length:</dt>
+          <dd>{{ image.exif_by_block.EXIF.FocalLength }}</dd>
+        </dl>
 
+        {% comment %}
+                Below are next & prev links, and a back-to-gallery link, if the gallery page was passed in the url
+        {% endcomment %}
 
+        <ul>
+
+            {% if prev != None %}
+                <li class="prev">
+                    <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
+                        ← {% trans "previous" %} {{ prev.title }}</a>
+                </li>
+            {% endif %}
+
+            {% if next != None %}
+                <li class="next">
+                    <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
+                        {% trans "next" %} {{ next.title }} →</a>
+                </li>
+            {% endif %}
+
+            {# the back mechanism can only resolve back to the original page, not a specific gallery on that page #}
+            {% if back %}
+                <li class="back">
+                    <a href="{{ back }}" >
+                        {% trans "back to gallery" %}
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </div>
+{% endblock content %}

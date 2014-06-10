@@ -1,49 +1,65 @@
 {% load i18n %}
 {% load thumbnail %}
 {% load url from future %}
+{% load sekizai_tags %}
 
-<ul>
-{% for image in images %}
-    <li class='image-preview'>
+{% addtoblock "css" %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
+<style type="text/css">
+    /* css for this list template only*/
+</style>
+{% endaddtoblock %}
 
-        {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+{% addtoblock "js" %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
+<script type="text/javascript">
+    /* js for this list template only */
+</script>
+{% endaddtoblock %}
 
-            <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
-                <img class="preview" src="{{ im.url }}"
-                {% if image.title %}
-                  alt="{{ image.title }}"
-                {% endif %}
-                data-title="{{ image.title }}"
-                data-description="{{ image.description }}"
-                data-tags={{ image.tags }}
-                >
-            </a>
-
-            {# This is just to show use of trans tag #}
-            {% if image.title %}
-                <br><span class='image-title'>{{ image.title }}</span>
-            {% else %}
-                <br><span class='image-title'>{% trans 'untitled' %}</span>
-            {% endif %}
-
-        {% endthumbnail %}
-
-    </li>
-{% endfor %}
-</ul>
-
-{% if filtered %}
-    {{ filtered }}
-{% else %}
-    The images were taken across the following set of dates...
-    <br>
+<div class="imagesift-list">
     <ul>
-        {% for dd in dates %}
-          <li>
-              <a href="?date={{ dd }}">{{ dd }}</a>
-          </li>
-        {% endfor %}
-    </ul>
-{% endif %}
+    {% for image in images %}
+        <li class='image-preview'>
 
+            {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+            {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+
+                <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
+                    <img class="preview" src="{{ im.url }}"
+                    {% if image.title %}
+                      alt="{{ image.title }}"
+                    {% endif %}
+                    data-title="{{ image.title }}"
+                    data-description="{{ image.description }}"
+                    data-tags={{ image.tags }}
+                    >
+                </a>
+
+                {% if image.title %}
+                    <br><span class='image-title'>{{ image.title }}</span>
+                {% else %}
+                    <br><span class='image-title'>{% trans 'untitled' %}</span>
+                {% endif %}
+
+            {% endthumbnail %}
+
+        </li>
+    {% endfor %}
+    </ul>
+
+    {% if filtered %}
+        {{ filtered }}
+    {% else %}
+        {% trans "The images were taken across the following set of dates..." %}
+        <br>
+        <ul>
+            {% for dd in dates %}
+              <li>
+                  <a href="?date={{ dd }}">{{ dd }}</a>
+              </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</div>
