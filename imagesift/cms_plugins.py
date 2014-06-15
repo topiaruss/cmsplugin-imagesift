@@ -26,14 +26,20 @@ class ImagesiftPlugin(CMSPluginBase):
         date = context['request'].GET.get('date')
         limit = instance.thumbnail_limit
         qs = instance.get_images_queryset()
-        if limit:
-            qs = qs[:limit]
+        # there's no way around listing, sorry.
+        qs = list(qs)
+
         filtered = False
         if date:
             date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-            qs = list(qs)
             qs = [i for i in qs if i.overrideable_date().date() == date]
             filtered = _('The set of images is filtered to %s' % unicode(date))
+
+        # sort before limit
+        qs.sort(key=lambda i: i.overrideable_date())
+
+        if limit:
+            qs = qs[:limit]
 
         context.update({
             'dates': [d.isoformat() for d in self.date_digest(qs)],
