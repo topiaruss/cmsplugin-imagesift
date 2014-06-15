@@ -51,15 +51,19 @@
     {% if filtered %}
         {{ filtered }}
     {% else %}
-        {% trans "The images were taken across the following set of dates..." %}
-        <br>
-        <ul>
-            {% for dd in dates %}
-              <li>
-                  <a href="?date={{ dd }}">{{ dd }}</a>
-              </li>
-            {% endfor %}
-        </ul>
+        {% if dates %}
+            {% trans "The images were taken across the following set of dates..." %}
+            <br>
+            <ul>
+                {% for dd in dates %}
+                  <li>
+                      <a href="?date={{ dd }}">{{ dd }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% trans "No images matching the search term(s) were found" %}
+        {% endif %}
     {% endif %}
 
 </div>
