@@ -48,9 +48,17 @@
           <dd>{{ image.title }}</dd>
           <dt>Description:</dt>
           <dd>{{ image.description }}</dd>
+          <dt>Video URL:</dt>
+          <dd>
+            {% if image.has_video %}
+               {% trans 'This image has a video URL at' %} <a href="{{ image.video_url }}">{{ image.video_url }}</a>
+            {% else %}
+               {% trans 'This image has no video URL.' %}
+            {% endif %}
+            </dd>
         </dl>
 
-        Here's the data...
+        Here's are some items from the Image and EXIF data blocks...
 
         <br>
         <dl>
@@ -77,6 +85,19 @@
           <dt>Focal Length:</dt>
           <dd>{{ image.exif_by_block.EXIF.FocalLength }}</dd>
         </dl>
+
+        {% if image.exif_by_block.GPS %}
+            {% trans 'This image has GPS data:' %}
+            <dl>
+                <dt>GPS Latitude</dt>
+                <dd>{{ image.exif_by_block.GPS.GPSLongitude }}{{ image.exif_by_block.GPS.GPSLongitudeRef }}</dd>
+                <dt>GPS Longitude</dt>
+                <dd>{{ image.exif_by_block.GPS.GPSLongitude }}{{ image.exif_by_block.GPS.GPSLongitudeRef }}</dd>
+            </dl>
+        {% else %}
+           {% trans 'This image has no GPS data.' %}
+        {% endif %}
+
 
         {% comment %}
                 Below are next & prev links, and a back-to-gallery link, only if the gallery page was passed in the url
