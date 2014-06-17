@@ -35,11 +35,12 @@
                     data-tags={{ image.tags }}
                     >
                 </a>
-
+                <br>
+                {{ image.overrideable_date }} --
                 {% if image.title %}
-                    <br><span class='image-title'>{{ image.title }}</span>
+                    <span class='image-title'>{{ image.title }}</span>
                 {% else %}
-                    <br><span class='image-title'>{% trans 'untitled' %}</span>
+                    <span class='image-title'>{% trans 'untitled' %}</span>
                 {% endif %}
 
             {% endthumbnail %}
