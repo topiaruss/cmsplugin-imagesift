@@ -1,6 +1,8 @@
+from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
+from django.shortcuts import render_to_response
 
-from .models import GalleryPlugin
+from models.gallery import GalleryPlugin
 from imagestore.models import Image
 
 
@@ -43,3 +45,14 @@ class ImageView(DetailView):
         context.update(geometry=geometry)
 
         return context
+
+
+def ajax_more(request, gall):
+    plugin = get_object_or_404(GalleryPlugin, pk=gall)
+    start = request.GET.get('start', 0)
+    reverse = request.GET.get('reverse', False)
+    back = request.GET.get('back', '')
+    # WORK IN PROGRESS
+    #TODO: add images
+    return render_to_response('imagesift_more.html', dict(start=start, reverse=reverse, back=back))
+

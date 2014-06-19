@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load url from future %}
+
+{# We presume that js and css are already defined in the context of this block, hence no sekizai #}
+
+{% for image in images %}
+<div class="gallery-thumb"
+
+    {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
+
+    {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+
+    <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
+        <img class="preview" src="{{ im.url }}">
+    </a>
+
+    {% endthumbnail %}
+    <div class="caption">{{ image.title }}</div>
+    </div>
+
+{% endfor %}
+
+{% comment %}
+Example...
+<div class="gallery-thumb">
+    <a href="#">
+        <img src="static/img/gallery/temp-1.jpg" width="241" height="153"/>
+    </a>
+    <div class="caption">Image caption</div>
+</div>
+<div class="gallery-thumb"><a href="#"><img src="static/img/gallery/temp-2.jpg" width="241" height="331" /></a><div class="caption">Image caption</div></div>
+{% endcomment %}

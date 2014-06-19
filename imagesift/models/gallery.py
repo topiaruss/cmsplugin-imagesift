@@ -22,7 +22,6 @@ class GalleryPlugin(CMSPlugin):
                                       help_text=_('Examples: "600x400", "600", "x400"'))
     filter = models.TextField(help_text=_('Items matching ALL these tags will be shown. One tag per line.'))
 
-
     def get_images_queryset(self):
         """
         The universal queryset generator for the plugin
@@ -53,6 +52,3 @@ class GalleryPlugin(CMSPlugin):
         if next is not None:
             next = images.get(id__exact=immap[next])
         return prev, next
-
-# Override for imagestore Image model
-
