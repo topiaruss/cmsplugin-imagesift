@@ -52,8 +52,6 @@ def ajax_more(request, gall):
     """
     returns the next batch of images. Template includes a button for the following batch.
     """
-    # TODO: currently based on a raw query. Make it filter aware, after refactoring sort/filter into model module.
-
     instance = get_object_or_404(GalleryPlugin, pk=gall)
 
     try:
@@ -69,33 +67,37 @@ def ajax_more(request, gall):
 
     back = request.GET.get('back', '')
 
-    qs = instance.get_images_queryset()
-    #TODO : here get the properly filtered ordered qs
+    bundle = instance.get_filtered_queryset_bundle(request)
+    images = bundle['images']
 
     def_limit = settings.IMAGESIFT_DEFAULT_LIMIT_AJAX_MORE
     limit = (instance.thumbnail_limit if instance.thumbnail_limit else def_limit)
-
     end = start + limit
-    final_batch = end > qs.count()
-    ret = qs[start:end]
+    final_batch = end >= len(images)
+    ret = images[start:end]
 
     prev_start = start  # so that we can build image detail links back to this current block
-    remaining = 0
     # confusing if we were to continue incrementing after final batch, so advance conditionally
     if not final_batch:
-        start = start + end
-        remaining = qs.count() - start
+        start += end
+    remaining = len(images) - start
     limit = min(remaining, limit)
 
     context = dict(instance=instance,
                    back=back,
                    final_batch=final_batch,
-                   images=list(ret),
+                   images=ret,
                    limit=limit,
                    remaining=remaining,
                    prev_start=prev_start,
                    reverse=reverse,
                    start=start)
+
+    del bundle['images']  # don't want to overwrite the images subset already in context
+
+    context.update(bundle)
+
+    print context
 
     return render_to_response('imagesift_more.html', context)
 

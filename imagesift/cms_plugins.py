@@ -75,6 +75,11 @@ class ImagesiftPlugin(CMSPluginBase):
         # print context['events']
         # print context['models']
         # print context['photogs']
+        # print 'da', context['filtered_date']
+        # print 'mo', context['filtered_model']
+        # print 'ph', context['filtered_photog']
+        # print 'ev', context['filtered_event']
+
         return context
 
 

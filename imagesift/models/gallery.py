@@ -20,7 +20,7 @@ class GalleryPlugin(CMSPlugin):
     thumbnail_geometry = models.CharField(max_length=50, default='50x50',
                                           help_text=_('Examples: "50x30", "50", "x30"'))
     thumbnail_limit = models.IntegerField(default=0,
-                                          help_text=_('Maximum count of items to show. 0 means no limit.'))
+                                          help_text=_('Maximum count of items in a batch. 0 means no limit.'))
     image_geometry = models.CharField(max_length=50, default='300x200',
                                       help_text=_('Examples: "600x400", "600", "x400"'))
     filter = models.TextField(help_text=_('Items matching ALL these tags will be shown. One tag per line.'))
@@ -71,7 +71,6 @@ class GalleryPlugin(CMSPlugin):
         changing this, and its template.
         """
         url = request.get_full_path()
-        limit = self.thumbnail_limit
         qs = self.get_images_queryset()
 
         # there's no way to avoid listing, sorry -- we need to filter on a computed value.
@@ -103,23 +102,24 @@ class GalleryPlugin(CMSPlugin):
             qs = [i for i in qs if i.overrideable_photographer() == photog]
             filtered_photog = photog
 
-        # sort before limit
+        # sort before reverse
         qs = self.sort_by_overrideable_date(qs)
 
-        # reverse after sort, before limit
+        # reverse after sort
         reverse = request.GET.get('reverse')
         if reverse:
             qs.reverse()
 
-        # finally, limit
-        if limit:
-            qs = qs[:limit]
-
-        return dict(
+        ret = dict(
             images=qs,
-            date=date,
+            date=('' if date is None else date),
+            event=('' if event is None else event),
             filtered_date=filtered_date,
             filtered_event=filtered_event,
             filtered_model=filtered_model,
             filtered_photog=filtered_photog,
-            reverse=reverse)
+            model=('' if model is None else model),
+            photog=('' if photog is None else photog),
+            reverse=('' if reverse is None else reverse) )
+        print ret
+        return ret
