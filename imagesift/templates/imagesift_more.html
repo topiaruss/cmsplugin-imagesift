@@ -4,30 +4,54 @@
 
 {# We presume that js and css are already defined in the context of this block, hence no sekizai #}
 
-{% for image in images %}
-<div class="gallery-thumb"
+<div class="gallery-container">
 
-    {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
+    {% for image in images %}
+    <div class="gallery-thumb"
 
-    {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+        {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
 
-    <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
-        <img class="preview" src="{{ im.url }}">
-    </a>
+        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-    {% endthumbnail %}
-    <div class="caption">{{ image.title }}</div>
+        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&start={{ prev_start }}&back={{ url }}&reverse={{ reverse }}">
+            <img class="preview" src="{{ im.url }}">
+        </a>
+
+        {% endthumbnail %}
+        <div class="caption">{{ image.title }}</div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% if final_batch %}
+
+    {% if not images %}
+
+        <div class="more-container">
+            <div class="status-message">
+                No images here, yet.
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="more-container">
+            <div class="status-message">
+                No more images.
+            </div>
+        </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="more-container">
+        <a href="/imagesift/more/1/?gall={{ instance.pk }}&start={{ start }}&back={{ url }}&reverse={{ reverse }}" class="load-more">load next {{ limit }}>></a>
+        {# use the remaining value if you want to... #}
+        <div data-items-remaining="{{ remaining }}"></div>
     </div>
 
-{% endfor %}
+{% endif %}
 
-{% comment %}
-Example...
-<div class="gallery-thumb">
-    <a href="#">
-        <img src="static/img/gallery/temp-1.jpg" width="241" height="153"/>
-    </a>
-    <div class="caption">Image caption</div>
-</div>
-<div class="gallery-thumb"><a href="#"><img src="static/img/gallery/temp-2.jpg" width="241" height="331" /></a><div class="caption">Image caption</div></div>
-{% endcomment %}

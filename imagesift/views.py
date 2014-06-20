@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 from django.shortcuts import render_to_response
@@ -48,11 +49,53 @@ class ImageView(DetailView):
 
 
 def ajax_more(request, gall):
-    plugin = get_object_or_404(GalleryPlugin, pk=gall)
-    start = request.GET.get('start', 0)
-    reverse = request.GET.get('reverse', False)
+    """
+    returns the next batch of images. Template includes a button for the following batch.
+    """
+    # TODO: currently based on a raw query. Make it filter aware, after refactoring sort/filter into model module.
+
+    instance = get_object_or_404(GalleryPlugin, pk=gall)
+
+    try:
+        start = int(request.GET.get('start', u'0'))
+    except:
+        start = 0
+
+    try:
+        reverse = request.GET.get('reverse', u'')
+        reverse = reverse and int(reverse)>1 and reverse not in [u'false', u'False']
+    except:
+        reverse = False
+
     back = request.GET.get('back', '')
-    # WORK IN PROGRESS
-    #TODO: add images
-    return render_to_response('imagesift_more.html', dict(start=start, reverse=reverse, back=back))
+
+    qs = instance.get_images_queryset()
+    #TODO : here get the properly filtered ordered qs
+
+    def_limit = settings.IMAGESIFT_DEFAULT_LIMIT_AJAX_MORE
+    limit = (instance.thumbnail_limit if instance.thumbnail_limit else def_limit)
+
+    end = start + limit
+    final_batch = end > qs.count()
+    ret = qs[start:end]
+
+    prev_start = start  # so that we can build image detail links back to this current block
+    remaining = 0
+    # confusing if we were to continue incrementing after final batch, so advance conditionally
+    if not final_batch:
+        start = start + end
+        remaining = qs.count() - start
+    limit = min(remaining, limit)
+
+    context = dict(instance=instance,
+                   back=back,
+                   final_batch=final_batch,
+                   images=list(ret),
+                   limit=limit,
+                   remaining=remaining,
+                   prev_start=prev_start,
+                   reverse=reverse,
+                   start=start)
+
+    return render_to_response('imagesift_more.html', context)
 
