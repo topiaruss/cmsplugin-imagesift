@@ -49,22 +49,81 @@
     {% endfor %}
     </ul>
 
-    {% if filtered %}
-        {{ filtered }}
+    {% if filtered_date %}
+        Filtered for date: {{ filtered_date }}
     {% else %}
         {% if dates %}
+            <br>
             {% trans "The images were taken across the following set of dates...!" %}
             <br>
             <ul>
-                {% for dd in dates %}
+                {% for item in dates %}
                   <li>
-                      <a href="?date={{ dd }}">{{ dd }}</a>
+                      <a href="?date={{ item }}">{{ item }}</a>
                   </li>
                 {% endfor %}
             </ul>
         {% else %}
             {% trans "No images matching the search term(s) were found" %}
         {% endif %}
+
+    {% endif %}
+
+    {% if filtered_event %}
+        Filtered for event: {{ filtered_event }}
+    {% else %}
+
+        {% if events %}
+            <br>
+            {% trans "The images were taken across the following set of events...!" %}
+            <br>
+            <ul>
+                {% for item in events %}
+                  <li>
+                      <a href="?event={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
+    {% if filtered_photog %}
+        Filtered for photographer: {{ filtered_photog }}
+    {% else %}
+
+        {% if photogs %}
+            <br>
+            {% trans "The images were taken by the following set of photographers...!" %}
+            <br>
+            <ul>
+                {% for item in photogs %}
+                  <li>
+                      <a href="?photog={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
+    {% if filtered_model %}
+        Filtered for model: {{ filtered_model }}
+    {% else %}
+
+        {% if models %}
+            <br>
+            {% trans "The images were taken on these camera models...!" %}
+            <br>
+            <ul>
+                {% for item in models %}
+                  <li>
+                      <a href="?model={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
     {% endif %}
 
 </div>

@@ -23,45 +23,58 @@ class ImagesiftPlugin(CMSPluginBase):
             dates.setdefault(i.overrideable_date().date(), None)
         return sorted(dates.keys())
 
-    def sort_by_overrideable_date(self, qs):
-        try:
-            qs.sort(key=lambda i: i.overrideable_date())
-        except TypeError:
-            # poss "can't compare offset-naive and offset-aware datetimes"
-            logger.exception('comparison of naiive/smart dates?')
-            for i in qs:
-                logger.debug('overridable_date : %s' % i.overrideable_date().isoformat())
-        return qs
+    def photographer_digest(self, images):
+        """
+        return a list of unique photogs, for all the images passed
+        """
+        photogs = {}
+        for i in images:
+            photogs.setdefault(i.overrideable_photographer(), None)
+        for trash in ['', None, u'']:
+            photogs.pop(trash, None)
+        return sorted(photogs.keys())
 
+    def camera_model_digest(self, images):
+        """
+        return a list of unique cam models, for all the images passed
+        """
+        cams = {}
+        for i in images:
+            cams.setdefault(i.exif_by_block()['Image']['Model'], None)
+        for trash in ['', None, u'']:
+            cams.pop(trash, None)
+        return sorted(cams.keys())
+
+    def event_digest(self, images):
+        """
+        return a list of unique cam models, for all the images passed
+        """
+        events = {}
+        for i in images:
+            events.setdefault(i.event_name, None)
+        for trash in ['', None, u'']:
+            events.pop(trash, None)
+        return sorted(events.keys())
 
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
-        date = context['request'].GET.get('date')
-        limit = instance.thumbnail_limit
-        qs = instance.get_images_queryset()
-        # there's no way around listing, sorry.
-        qs = list(qs)
 
-        filtered = False
-        if date:
-            date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-            qs = [i for i in qs if i.overrideable_date().date() == date]
-            filtered = _('The set of images is filtered to %s' % unicode(date))
-
-        # sort before limit
-        qs = self.sort_by_overrideable_date(qs)
-
-        if limit:
-            qs = qs[:limit]
-
+        filter_results = instance.get_filtered_queryset_bundle(context['request'])
+        context.update(filter_results)
         context.update({
-            'dates': [d.isoformat() for d in self.date_digest(qs)],
-            'filtered':filtered,
-            'images': qs,
+            'dates': [d.isoformat() for d in self.date_digest(filter_results['images'])],
+            'events': self.event_digest(filter_results['images']),
+            'models': self.camera_model_digest(filter_results['images']),
+            'photogs': self.photographer_digest(filter_results['images']),
             'instance': instance,
             'placeholder': placeholder,
             'url':url,
         })
+
+        # print context['dates']
+        # print context['events']
+        # print context['models']
+        # print context['photogs']
         return context
 
 
