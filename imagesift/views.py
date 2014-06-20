@@ -97,7 +97,5 @@ def ajax_more(request, gall):
 
     context.update(bundle)
 
-    print context
-
     return render_to_response('imagesift_more.html', context)
 

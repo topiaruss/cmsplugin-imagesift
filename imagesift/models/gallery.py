@@ -121,5 +121,5 @@ class GalleryPlugin(CMSPlugin):
             model=('' if model is None else model),
             photog=('' if photog is None else photog),
             reverse=('' if reverse is None else reverse) )
-        print ret
+
         return ret
