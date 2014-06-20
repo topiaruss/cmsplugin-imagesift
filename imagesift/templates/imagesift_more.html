@@ -7,7 +7,7 @@
 <div class="gallery-container">
 
     {% for image in images %}
-    <div class="gallery-thumb"
+    <div class="gallery-thumb">
 
         {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
 
@@ -21,13 +21,14 @@
         <div class="caption">{{ image.title }}</div>
         </div>
 
+    </div>
     {% endfor %}
-
-</div>
 
 {% if final_batch %}
 
     {% if not images %}
+
+        {# in this case, there were no images in the current batch meaning it's an EMPTY first AND final batch. #}
 
         <div class="more-container">
             <div class="status-message">
@@ -37,6 +38,7 @@
 
     {% else %}
 
+        {# in this case, there were images in the current batch, but this is the final batch. #}
         <div class="more-container">
             <div class="status-message">
                 No more images.
@@ -48,9 +50,12 @@
 {% else %}
 
     <div class="more-container">
+
         <a href="/imagesift/more/1/?gall={{ instance.pk }}&start={{ start }}&back={{ url }}&reverse={{ reverse }}" class="load-more">load next {{ limit }}>></a>
+
         {# use the remaining value if you want to... #}
         <div data-items-remaining="{{ remaining }}"></div>
+
     </div>
 
 {% endif %}

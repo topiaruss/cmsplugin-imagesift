@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+import logging
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,6 +9,7 @@ from cms.models.pluginmodel import CMSPlugin
 from imagestore.models import Image
 from tagging.models import TaggedItem
 
+logger = logging.getLogger(__name__)
 
 
 class GalleryPlugin(CMSPlugin):
@@ -29,9 +32,17 @@ class GalleryPlugin(CMSPlugin):
         tags = self.filter.splitlines()
         tags = [t.strip() for t in tags]
         images = TaggedItem.objects.get_by_model(Image, tags)
-        # temporarily order by the date added to the imagestore, later by exif image date?
-        images = images.order_by('created')
         return images
+
+    def sort_by_overrideable_date(self, qs):
+        try:
+            qs.sort(key=lambda i: i.overrideable_date())
+        except TypeError:
+            # poss "can't compare offset-naive and offset-aware datetimes"
+            logger.exception('comparison of naiive/smart dates?')
+            for i in qs:
+                logger.debug('overridable_date : %s' % i.overrideable_date().isoformat())
+        return qs
 
     def get_immediate_neighbours(self, image):
         """
@@ -52,3 +63,63 @@ class GalleryPlugin(CMSPlugin):
         if next is not None:
             next = images.get(id__exact=immap[next])
         return prev, next
+
+    def get_filtered_queryset_bundle(self, request):
+        """
+        this is called from a view, and uses request variables to filter the return set, returning
+        the salient variables. This means that we should be able to get away with adding filters just by
+        changing this, and its template.
+        """
+        url = request.get_full_path()
+        limit = self.thumbnail_limit
+        qs = self.get_images_queryset()
+
+        # there's no way to avoid listing, sorry -- we need to filter on a computed value.
+        # OPTIMISE: overrideable date could be replace at the query level with a few hours' work.  Not worth it.
+        qs = list(qs)
+
+        date = request.GET.get('date')
+        filtered_date = None
+        if date:
+            date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            qs = [i for i in qs if i.overrideable_date().date() == date]
+            filtered_date = unicode(date)
+
+        event = request.GET.get('event')
+        filtered_event = None
+        if event:
+            qs = [i for i in qs if i.event_name == event]
+            filtered_event = event
+
+        model = request.GET.get('model')
+        filtered_model = None
+        if model:
+            qs = [i for i in qs if i.exif_by_block()['Image']['Model'] == model]
+            filtered_model = model
+
+        photog = request.GET.get('photog')
+        filtered_photog = None
+        if photog:
+            qs = [i for i in qs if i.overrideable_photographer() == photog]
+            filtered_photog = photog
+
+        # sort before limit
+        qs = self.sort_by_overrideable_date(qs)
+
+        # reverse after sort, before limit
+        reverse = request.GET.get('reverse')
+        if reverse:
+            qs.reverse()
+
+        # finally, limit
+        if limit:
+            qs = qs[:limit]
+
+        return dict(
+            images=qs,
+            date=date,
+            filtered_date=filtered_date,
+            filtered_event=filtered_event,
+            filtered_model=filtered_model,
+            filtered_photog=filtered_photog,
+            reverse=reverse)
