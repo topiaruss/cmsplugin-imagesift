@@ -17,10 +17,9 @@
 </script>
 {% endaddtoblock %}
 
-<div class="imagesift-list">
-
 {% include "imagesift_more.html" %}
 
+<div class="hidden">
     {% if filtered_date %}
         Filtered for date: {{ filtered_date }}
     {% else %}
