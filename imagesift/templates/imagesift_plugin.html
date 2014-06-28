@@ -18,36 +18,8 @@
 {% endaddtoblock %}
 
 <div class="imagesift-list">
-    <ul>
-    {% for image in images %}
-        <li class='image-preview'>
 
-            {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-            {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
-
-                <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
-                    <img class="preview" src="{{ im.url }}"
-                    {% if image.title %}
-                      alt="{{ image.title }}"
-                    {% endif %}
-                    data-title="{{ image.title }}"
-                    data-description="{{ image.description }}"
-                    data-tags={{ image.tags }}
-                    >
-                </a>
-                <br>
-                {{ image.overrideable_date }} --
-                {% if image.title %}
-                    <span class='image-title'>{{ image.title }}</span>
-                {% else %}
-                    <span class='image-title'>{% trans 'untitled' %}</span>
-                {% endif %}
-
-            {% endthumbnail %}
-
-        </li>
-    {% endfor %}
-    </ul>
+{% include "imagesift_more.html" %}
 
     {% if filtered_date %}
         Filtered for date: {{ filtered_date }}

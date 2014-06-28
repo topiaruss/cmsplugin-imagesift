@@ -47,12 +47,7 @@ class ImageView(DetailView):
 
         return context
 
-
-def ajax_more(request, gall):
-    """
-    returns the next batch of images. Template includes a button for the following batch.
-    """
-    instance = get_object_or_404(GalleryPlugin, pk=gall)
+def get_batch_context(request, instance, context={}):
 
     try:
         start = int(request.GET.get('start', u'0'))
@@ -83,7 +78,7 @@ def ajax_more(request, gall):
     remaining = len(images) - start
     limit = min(remaining, limit)
 
-    context = dict(instance=instance,
+    context.update(dict(instance=instance,
                    back=back,
                    final_batch=final_batch,
                    images=ret,
@@ -91,11 +86,21 @@ def ajax_more(request, gall):
                    remaining=remaining,
                    prev_start=prev_start,
                    reverse=reverse,
-                   start=start)
+                   start=start))
 
     del bundle['images']  # don't want to overwrite the images subset already in context
 
     context.update(bundle)
+
+    return context
+
+def ajax_more(request, gall):
+    """
+    returns the next batch of images. Template includes a button for the following batch.
+    """
+    instance = get_object_or_404(GalleryPlugin, pk=gall)
+
+    context = get_batch_context(request, instance)
 
     return render_to_response('imagesift_more.html', context)
 
