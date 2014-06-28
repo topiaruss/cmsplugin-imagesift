@@ -40,7 +40,11 @@ class ImagesiftPlugin(CMSPluginBase):
         """
         cams = {}
         for i in images:
-            cams.setdefault(i.exif_by_block()['Image']['Model'], None)
+            try:
+                mod = i.exif_by_block()['Image']['Model']
+                cams[mod] = None
+            except KeyError:
+                continue
         for trash in ['', None, u'']:
             cams.pop(trash, None)
         return sorted(cams.keys())
