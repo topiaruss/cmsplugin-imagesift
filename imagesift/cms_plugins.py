@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from .models import GalleryPlugin
+from .views import get_batch_context
 
 logger = logging.getLogger(__name__)
 
@@ -63,13 +64,13 @@ class ImagesiftPlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         url = context['request'].get_full_path()
 
-        filter_results = instance.get_filtered_queryset_bundle(context['request'])
-        context.update(filter_results)
+        batch_data = get_batch_context(context['request'], instance, {})
+        context.update(batch_data)
         context.update({
-            'dates': [d.isoformat() for d in self.date_digest(filter_results['images'])],
-            'events': self.event_digest(filter_results['images']),
-            'models': self.camera_model_digest(filter_results['images']),
-            'photogs': self.photographer_digest(filter_results['images']),
+            'dates': [d.isoformat() for d in self.date_digest(batch_data['images'])],
+            'events': self.event_digest(batch_data['images']),
+            'models': self.camera_model_digest(batch_data['images']),
+            'photogs': self.photographer_digest(batch_data['images']),
             'instance': instance,
             'placeholder': placeholder,
             'url':url,

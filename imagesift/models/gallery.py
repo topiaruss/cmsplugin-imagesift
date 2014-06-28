@@ -94,6 +94,14 @@ class GalleryPlugin(CMSPlugin):
         filtered_model = None
         if model:
             qs = [i for i in qs if i.exif_by_block()['Image']['Model'] == model]
+            accu = []
+            for i in qs:
+                try:
+                    if i.exif_by_block()['Image']['Model'] == model:
+                        accu += i
+                except:
+                    continue
+            qs = accu
             filtered_model = model
 
         photog = request.GET.get('photog')
