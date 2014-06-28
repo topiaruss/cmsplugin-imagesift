@@ -1,6 +1,9 @@
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
+from django.shortcuts import render_to_response
 
-from .models import GalleryPlugin
+from models.gallery import GalleryPlugin
 from imagestore.models import Image
 
 
@@ -43,3 +46,56 @@ class ImageView(DetailView):
         context.update(geometry=geometry)
 
         return context
+
+
+def ajax_more(request, gall):
+    """
+    returns the next batch of images. Template includes a button for the following batch.
+    """
+    instance = get_object_or_404(GalleryPlugin, pk=gall)
+
+    try:
+        start = int(request.GET.get('start', u'0'))
+    except:
+        start = 0
+
+    try:
+        reverse = request.GET.get('reverse', u'')
+        reverse = reverse and int(reverse)>1 and reverse not in [u'false', u'False']
+    except:
+        reverse = False
+
+    back = request.GET.get('back', '')
+
+    bundle = instance.get_filtered_queryset_bundle(request)
+    images = bundle['images']
+
+    def_limit = settings.IMAGESIFT_DEFAULT_LIMIT_AJAX_MORE
+    limit = (instance.thumbnail_limit if instance.thumbnail_limit else def_limit)
+    end = start + limit
+    final_batch = end >= len(images)
+    ret = images[start:end]
+
+    prev_start = start  # so that we can build image detail links back to this current block
+    # confusing if we were to continue incrementing after final batch, so advance conditionally
+    if not final_batch:
+        start += end
+    remaining = len(images) - start
+    limit = min(remaining, limit)
+
+    context = dict(instance=instance,
+                   back=back,
+                   final_batch=final_batch,
+                   images=ret,
+                   limit=limit,
+                   remaining=remaining,
+                   prev_start=prev_start,
+                   reverse=reverse,
+                   start=start)
+
+    del bundle['images']  # don't want to overwrite the images subset already in context
+
+    context.update(bundle)
+
+    return render_to_response('imagesift_more.html', context)
+

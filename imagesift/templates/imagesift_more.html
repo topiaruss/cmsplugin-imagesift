@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load thumbnail %}
+{% load url from future %}
+
+{# We presume that js and css are already defined in the context of this block, hence no sekizai #}
+
+<div class="gallery-container">
+
+    {% for image in images %}
+    <div class="gallery-thumb">
+
+        {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
+
+        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+
+        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&start={{ prev_start }}&back={{ url }}&reverse={{ reverse }}">
+            <img class="preview" src="{{ im.url }}">
+        </a>
+
+        {% endthumbnail %}
+        <div class="caption">{{ image.title }}</div>
+        </div>
+
+    </div>
+    {% endfor %}
+
+{% if final_batch %}
+
+    {% if not images %}
+
+        {# in this case, there were no images in the current batch meaning it's an EMPTY first AND final batch. #}
+
+        <div class="more-container">
+            <div class="status-message">
+                No images here, yet.
+            </div>
+        </div>
+
+    {% else %}
+
+        {# in this case, there were images in the current batch, but this is the final batch. #}
+        <div class="more-container">
+            <div class="status-message">
+                No more images.
+            </div>
+        </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="more-container">
+
+        <a href="/imagesift/more/1/?gall={{ instance.pk }}&start={{ start }}&back={{ url }}&reverse={{ reverse }}&date={{ date }}&model={{ model }}&photog={{ photog }}"
+           class="load-more">load next {{ limit }}>></a>
+
+        {# use the remaining value if you want to... #}
+        <div data-items-remaining="{{ remaining }}"></div>
+
+    </div>
+
+{% endif %}
+
