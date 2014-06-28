@@ -4,67 +4,48 @@
 {% load sekizai_tags %}
 
 {% addtoblock "css" %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
-<style type="text/css">
-    /* css for this list template only*/
-</style>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
 {% endaddtoblock %}
 
 {% addtoblock "js" %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
-<script type="text/javascript">
-    /* js for this list template only */
-</script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/gallery.js"></script>
 {% endaddtoblock %}
 
-<div class="imagesift-list">
-    <ul>
+<div class="gallery-container">
+    
     {% for image in images %}
-        <li class='image-preview'>
+        <div class="gallery-thumb">
 
             {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
             {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-                <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
-                    <img class="preview" src="{{ im.url }}"
+                <a href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
+                    <img src="{{ im.url }}"
                     {% if image.title %}
                       alt="{{ image.title }}"
                     {% endif %}
                     data-title="{{ image.title }}"
                     data-description="{{ image.description }}"
                     data-tags={{ image.tags }}
+                    width="{{ im.width }}" height="{{ im.height }}"
                     >
                 </a>
-                <br>
-                {{ image.overrideable_date }} --
+                <div class="caption">
+                
                 {% if image.title %}
-                    <span class='image-title'>{{ image.title }}</span>
+                    {{ image.title }}
                 {% else %}
-                    <span class='image-title'>{% trans 'untitled' %}</span>
+                    {% trans 'Untitled' %}
                 {% endif %}
-
+                 </div>
             {% endthumbnail %}
 
-        </li>
+        </div>
     {% endfor %}
-    </ul>
 
-    {% if filtered %}
-        {{ filtered }}
-    {% else %}
-        {% if dates %}
-            {% trans "The images were taken across the following set of dates...!" %}
-            <br>
-            <ul>
-                {% for dd in dates %}
-                  <li>
-                      <a href="?date={{ dd }}">{{ dd }}</a>
-                  </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            {% trans "No images matching the search term(s) were found" %}
-        {% endif %}
-    {% endif %}
 
+</div>
+<div class="more-container">
+    <a href="gallery-ajax-1.html" class="load-more">load more 1 >></a>
+    <div class="status-message">loading...</div>
 </div>
