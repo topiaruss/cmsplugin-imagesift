@@ -4,48 +4,126 @@
 {% load sekizai_tags %}
 
 {% addtoblock "css" %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
+<style type="text/css">
+    /* css for this list template only*/
+</style>
 {% endaddtoblock %}
 
 {% addtoblock "js" %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/gallery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
+<script type="text/javascript">
+    /* js for this list template only */
+</script>
 {% endaddtoblock %}
 
-<div class="gallery-container">
-    
+<div class="imagesift-list">
+    <ul>
     {% for image in images %}
-        <div class="gallery-thumb">
+        <li class='image-preview'>
 
             {# Change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
             {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-                <a href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
-                    <img src="{{ im.url }}"
+                <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&back={{ url }}">
+                    <img class="preview" src="{{ im.url }}"
                     {% if image.title %}
                       alt="{{ image.title }}"
                     {% endif %}
                     data-title="{{ image.title }}"
                     data-description="{{ image.description }}"
                     data-tags={{ image.tags }}
-                    width="{{ im.width }}" height="{{ im.height }}"
                     >
                 </a>
-                <div class="caption">
-                
+                <br>
+                {{ image.overrideable_date }} --
                 {% if image.title %}
-                    {{ image.title }}
+                    <span class='image-title'>{{ image.title }}</span>
                 {% else %}
-                    {% trans 'Untitled' %}
+                    <span class='image-title'>{% trans 'untitled' %}</span>
                 {% endif %}
-                 </div>
+
             {% endthumbnail %}
 
-        </div>
+        </li>
     {% endfor %}
+    </ul>
 
+    {% if filtered_date %}
+        Filtered for date: {{ filtered_date }}
+    {% else %}
+        {% if dates %}
+            <br>
+            {% trans "The images were taken across the following set of dates...!" %}
+            <br>
+            <ul>
+                {% for item in dates %}
+                  <li>
+                      <a href="?date={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% trans "No images matching the search term(s) were found" %}
+        {% endif %}
 
-</div>
-<div class="more-container">
-    <a href="gallery-ajax-1.html" class="load-more">load more 1 >></a>
-    <div class="status-message">loading...</div>
+    {% endif %}
+
+    {% if filtered_event %}
+        Filtered for event: {{ filtered_event }}
+    {% else %}
+
+        {% if events %}
+            <br>
+            {% trans "The images were taken across the following set of events...!" %}
+            <br>
+            <ul>
+                {% for item in events %}
+                  <li>
+                      <a href="?event={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
+    {% if filtered_photog %}
+        Filtered for photographer: {{ filtered_photog }}
+    {% else %}
+
+        {% if photogs %}
+            <br>
+            {% trans "The images were taken by the following set of photographers...!" %}
+            <br>
+            <ul>
+                {% for item in photogs %}
+                  <li>
+                      <a href="?photog={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
+    {% if filtered_model %}
+        Filtered for model: {{ filtered_model }}
+    {% else %}
+
+        {% if models %}
+            <br>
+            {% trans "The images were taken on these camera models...!" %}
+            <br>
+            <ul>
+                {% for item in models %}
+                  <li>
+                      <a href="?model={{ item }}">{{ item }}</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% endif %}
+
 </div>
