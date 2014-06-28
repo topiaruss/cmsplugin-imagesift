@@ -34,100 +34,73 @@
         </script>
     {% endaddtoblock %}
 
-    <div class="imagesift-detail">
-        {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-        {% thumbnail image.image geometry crop="center" as im %}
 
-            <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %}>
+    <main class="black">
+      <div id="main-sub" >
+        <div id="content" class="gallery detail">
+          <div id="modal-container">
+            <div id="modal" class="visible">
+              <div id="modal-sub">
 
-        {% endthumbnail %}
-        <br>
+                <div id="modal-controls">
+                  <a id="close-modal" href="#">close x</a>
+                  {% if prev != None %}
+                      <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-previous" class="gallery-nav"></a>
+                  {% endif %}
+                  {% if next != None %}
+                      <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-next" class="gallery-nav"></a>
+                  {% endif %}
+                 
+                  
+                </div>
 
-        <dl>
-          <dt>Title:</dt>
-          <dd>{{ image.title }}</dd>
-          <dt>Description:</dt>
-          <dd>{{ image.description }}</dd>
-          <dt>Video URL:</dt>
-          <dd>
-            {% if image.has_video %}
-               {% trans 'This image has a video URL at' %} <a href="{{ image.video_url }}">{{ image.video_url }}</a>
-            {% else %}
-               {% trans 'This image has no video URL.' %}
-            {% endif %}
-            </dd>
-        </dl>
+                {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+                {% thumbnail image.image geometry crop="center" as im %}
 
-        Here's are some items from the Image and EXIF data blocks...
+                    <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %} width="{{ im.width }}" height="{{ im.height }}"/>
 
-        <br>
-        <dl>
-          <dt>Artist:</dt>
-          <dd>{{ image.overrideable_photographer }}</dd>
-          <dt>Event:</dt>
-          <dd>{{ image.event_name }}</dd>
-          <dt>Date:</dt>
-          <dd>{{ image.overrideable_date }}</dd>
-          <dt>Make:</dt>
-          <dd>{{ image.exif_by_block.Image.Make }}</dd>
-          <dt>Model:</dt>
-          <dd>{{ image.exif_by_block.Image.Model }}</dd>
-          <dt>Exposure Time:</dt>
-          <dd>{{ image.exif_by_block.EXIF.ExposureTime }}</dd>
-          <dt>Aperture:</dt>
-          <dd>{{ image.exif_by_block.EXIF.ApertureValue }}</dd>
-          <dt>ISO Speed:</dt>
-          <dd>{{ image.exif_by_block.EXIF.ISOSpeedRatings }}</dd>
-          <dt>Metering Mode:</dt>
-          <dd>{{ image.exif_by_block.EXIF.MeteringMode }}</dd>
-          <dt>Flash:</dt>
-          <dd>{{ image.exif_by_block.EXIF.Flash }}</dd>
-          <dt>Focal Length:</dt>
-          <dd>{{ image.exif_by_block.EXIF.FocalLength }}</dd>
-        </dl>
+                {% endthumbnail %}
 
-        {% if image.exif_by_block.GPS %}
-            {% trans 'This image has GPS data:' %}
-            <dl>
-                <dt>GPS Latitude</dt>
-                <dd>{{ image.exif_by_block.GPS.GPSLongitude }}{{ image.exif_by_block.GPS.GPSLongitudeRef }}</dd>
-                <dt>GPS Longitude</dt>
-                <dd>{{ image.exif_by_block.GPS.GPSLongitude }}{{ image.exif_by_block.GPS.GPSLongitudeRef }}</dd>
-            </dl>
-        {% else %}
-           {% trans 'This image has no GPS data.' %}
-        {% endif %}
+          
+                <div id="modal-meta">
+
+                  <div class="meta-col">
+                  {{ image.overrideable_photographer }}<br>
+                  {{ image.event_name }}<br>
+                  Date: {{ image.overrideable_date }}
+                  </div>
+
+                  <div class="meta-col">
+                  Image Description:<br>
+                  Make: {{ image.exif_by_block.Image.Make }} <br>
+                  Model: {{ image.exif_by_block.Image.Model }}
+                  </div>
+
+                  <div class="meta-col">
+                  Exposure Time: {{ image.exif_by_block.EXIF.ExposureTime }}<br>
+                  Aperture: {{ image.exif_by_block.EXIF.ApertureValue }}<br>
+                  ISO Speed: {{ image.exif_by_block.EXIF.ISOSpeedRatings }}
+                  </div>
+
+                  <div class="meta-col">
+                  Metering Mode: {{ image.exif_by_block.EXIF.MeteringMode }}<br>
+                  Flash: {{ image.exif_by_block.EXIF.Flash }}<br>
+                  Focal Length: {{ image.exif_by_block.EXIF.FocalLength }}
+                  </div>
+
+                </div>
 
 
-        {% comment %}
-                Below are next & prev links, and a back-to-gallery link, only if the gallery page was passed in the url
-        {% endcomment %}
+              </div>
+            </div>
 
-        <ul>
+          </div>
+        </div>
+        
 
-            {% if prev != None %}
-                <li class="prev">
-                    <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
-                        ← {% trans "previous" %} {{ prev.title }}</a>
-                </li>
-            {% endif %}
+        <div class="clear-fix"></div>
 
-            {% if next != None %}
-                <li class="next">
-                    <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" >
-                        {% trans "next" %} {{ next.title }} →</a>
-                </li>
-            {% endif %}
-
-            {# the back mechanism can only resolve back to the original page, not a specific gallery on that page #}
-            {% if back %}
-                <li class="back">
-                    <a href="{{ back }}" >
-                        {% trans "back to gallery" %}
-                    </a>
-                </li>
-            {% endif %}
-
-        </ul>
-    </div>
+      </div>
+      
+    </main>
 {% endblock content %}
