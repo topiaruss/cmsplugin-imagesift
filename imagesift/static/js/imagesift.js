@@ -1,11 +1,20 @@
 $(document).ready(function(){
 
+
+    console.log("form");
+    $(".j_filter").change(function(event){
+        console.log("submit form");
+        $("form#filter").submit(function(event){
+            console.log("form submitted");
+        });
+    });
+
+
+
     var loading_div;
 
-    console.log("???");
     var container = document.querySelector('#master-gallery .gallery-container');
     if(container){
-        console.log("container");
         var msnry = new Masonry( container ,
             { columnWidth: 241,gutter: 9, itemSelector: ".gallery-thumb", transitionDuration: 0 }
         );
@@ -21,10 +30,12 @@ $(document).ready(function(){
         $(window).scrollTop(0);
 
         console.log("AJAX load: "+$(this).attr('href'));
-        $("#modal").html('');
+        //$("#modal").html('');
+        
         $("#modal-container").load($(this).attr('href')+" #modal",function(e){
 
         });
+
     });
 
     $(document).on('click', '.gallery-nav', function(e) {
@@ -40,6 +51,7 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '#close-modal', function(e) {
+        console.log("close modal"); 
         e.preventDefault();
         $("main").removeClass('black');
         $("#modal").hide();

@@ -11,57 +11,61 @@
 
 {% addtoblock "js" %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
-<script type="text/javascript">
-  $(function(){
-          $(".j_filter").change(function(event){
-            $("form#filter").submit();
-          });
-        });
 
-</script>
 {% endaddtoblock %}
 
+
 <div id="master-gallery">
-    <form id="filter" method="get" action="">
-    <div class="gallery-filter">
-        <div class="gallery-filter-label">SORTED:</div>
-        <select class="j_filter" name="reverse">
-            <option value="" {% if not reverse %}selected="selected"{% endif %}>By Date</option>
-            <option value="1" {% if reverse %}selected="selected"{% endif %}>Latest First</option>
-        </select>
-    </div>
-    <div class="gallery-filter">
-        <div class="gallery-filter-label">FILTER BY:</div>
-    </div>
-    <div class="gallery-filter">
-        <div class="gallery-filter-label">Photographer</div>
-        <select class="j_filter" name="photog">
-            <option value="">--</option>
-            {% for item in photogs %}
-            <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="gallery-filter">
-        <div class="gallery-filter-label">Event</div>
-        <select class="j_filter" name="event">
-            <option value="">--</option>
-            {% for item in events %}
-            <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="gallery-filter">
-        <div class="gallery-filter-label">Camera Model</div>
-        <select class="j_filter" name="model">
-            <option value="">--</option>
-            {% for item in models %}
-            <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
-            {% endfor %}
-        </select>
-    </div>
+    <form id="filter" method="get" action="http://localhost:8000/gallery/">
+        <div class="gallery-sidebar">
+            
+           
+            <div class="gallery-filter">
+                <div class="gallery-filter-label">FILTER BY:</div>
+            </div>
+            <div class="gallery-filter">
+                <div class="gallery-filter-label">Photographer</div>
+                <select class="j_filter" name="photog">
+                    <option value="">--</option>
+                    {% for item in photogs %}
+                    <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="gallery-filter">
+                <div class="gallery-filter-label">Event</div>
+                <select class="j_filter" name="event">
+                    <option value="">--</option>
+                    {% for item in events %}
+                    <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="gallery-filter">
+                <div class="gallery-filter-label">Camera Model</div>
+                <select class="j_filter" name="model">
+                    <option value="">--</option>
+                    {% for item in models %}
+                    <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+       
+        </div>
+
+        <div class="gallery-topbar">
+             <div class="gallery-filter">
+                <div class="gallery-filter-label">SORTED:</div>
+                <select class="j_filter" name="reverse">
+                    <option value="" {% if not reverse %}selected="selected"{% endif %}>By Date</option>
+                    <option value="1" {% if reverse %}selected="selected"{% endif %}>Latest First</option>
+                </select>
+            </div>
+        </div>
+        
     </form>
-    <div class="clear-fix"></div>
+    
+    
 {% include "imagesift_more.html" %}
 </div>
 
