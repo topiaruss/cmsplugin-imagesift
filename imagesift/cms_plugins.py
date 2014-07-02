@@ -84,6 +84,7 @@ class ImagesiftPlugin(CMSPluginBase):
         # print 'mo', context['filtered_model']
         # print 'ph', context['filtered_photog']
         # print 'ev', context['filtered_event']
+        # print 'rev', context['reverse']
 
         return context
 
