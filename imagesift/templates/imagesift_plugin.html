@@ -12,18 +12,22 @@
 {% addtoblock "js" %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
 <script type="text/javascript">
-    /* js for this list template only */
+  $(function(){
+          $(".j_filter").change(function(event){
+            $("form#filter").submit();
+          });
+        });
+
 </script>
 {% endaddtoblock %}
 
 <div id="master-gallery">
+    <form id="filter" method="get" action="">
     <div class="gallery-filter">
-        <div class="gallery-filter-label">SORT BY:</div>
-        <select>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
+        <div class="gallery-filter-label">SORTED:</div>
+        <select class="j_filter" name="reverse">
+            <option value="" {% if not reverse %}selected="selected"{% endif %}>By Date</option>
+            <option value="1" {% if reverse %}selected="selected"{% endif %}>Latest First</option>
         </select>
     </div>
     <div class="gallery-filter">
@@ -31,31 +35,32 @@
     </div>
     <div class="gallery-filter">
         <div class="gallery-filter-label">Photographer</div>
-        <select>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
+        <select class="j_filter" name="photog">
+            <option value="">--</option>
+            {% for item in photogs %}
+            <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="gallery-filter">
         <div class="gallery-filter-label">Event</div>
-        <select>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
+        <select class="j_filter" name="event">
+            <option value="">--</option>
+            {% for item in events %}
+            <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="gallery-filter">
         <div class="gallery-filter-label">Camera Model</div>
-        <select>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
-            <option value="#">Lorem</option>
+        <select class="j_filter" name="model">
+            <option value="">--</option>
+            {% for item in models %}
+            <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
+            {% endfor %}
         </select>
     </div>
+    </form>
     <div class="clear-fix"></div>
 {% include "imagesift_more.html" %}
 </div>

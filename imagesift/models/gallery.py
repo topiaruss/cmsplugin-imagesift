@@ -98,7 +98,7 @@ class GalleryPlugin(CMSPlugin):
             for i in qs:
                 try:
                     if i.exif_by_block()['Image']['Model'] == model:
-                        accu += i
+                        accu.append(i)
                 except:
                     continue
             qs = accu
