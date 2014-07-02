@@ -76,15 +76,16 @@ class ImagesiftPlugin(CMSPluginBase):
             'url':url,
         })
 
-        # print context['dates']
-        # print context['events']
-        # print context['models']
-        # print context['photogs']
-        # print 'da', context['filtered_date']
-        # print 'mo', context['filtered_model']
-        # print 'ph', context['filtered_photog']
-        # print 'ev', context['filtered_event']
-        # print 'rev', context['reverse']
+        print context['dates']
+        print context['events']
+        print context['models']
+        print context['photogs']
+        print 'da', context['filtered_date']
+        print 'mo', context['filtered_model']
+        print 'ph', context['filtered_photog']
+        print 'ev', context['filtered_event']
+        print 'rev', context['reverse']
+        print 'images:', batch_data['images']
 
         return context
 

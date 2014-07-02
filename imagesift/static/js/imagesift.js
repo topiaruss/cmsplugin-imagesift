@@ -3,10 +3,12 @@ $(document).ready(function(){
 
     console.log("form");
     $(".j_filter").change(function(event){
-        console.log("submit form");
-        $("form#filter").submit(function(event){
-            console.log("form submitted");
-        });
+        console.log("submitting form");
+        $("form#filter").submit();
+
+//        $("form#filter").submit(function(event){
+//            console.log("form submitted");
+//        });
     });
 
 
