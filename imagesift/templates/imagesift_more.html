@@ -18,7 +18,7 @@
         </a>
 
         {% endthumbnail %}
-        <div class="caption">Lorem{{ image.title }}<div class="caption-more">view <img src="/static/img/gallery/view-plus.gif" /></div></div>
+        <div class="caption">{{ image.title|default:"untitled" }}<div class="caption-more">view <img src="/static/img/gallery/view-plus.gif" /></div></div>
 
     </div>
     {% endfor %}
