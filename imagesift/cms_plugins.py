@@ -76,16 +76,21 @@ class ImagesiftPlugin(CMSPluginBase):
             'url':url,
         })
 
-        print context['dates']
-        print context['events']
-        print context['models']
-        print context['photogs']
-        print 'da', context['filtered_date']
-        print 'mo', context['filtered_model']
-        print 'ph', context['filtered_photog']
-        print 'ev', context['filtered_event']
-        print 'rev', context['reverse']
-        print 'images:', batch_data['images']
+        DEBUGGING_THIS = 1
+
+        if DEBUGGING_THIS:
+            logger.info('PATH_INFO     : %s' % context['request'].META['PATH_INFO'])
+            logger.info('QUERY_STRING  : %s' % context['request'].META['QUERY_STRING'])
+            logger.info('dig dates     : %s' % context['dates'])
+            logger.info('dig events    : %s' % context['events'])
+            logger.info('dig models    : %s' % context['models'])
+            logger.info('dig photogs   : %s' % context['photogs'])
+            logger.info('filtered date : %s' % context['filtered_date'])
+            logger.info('filtered modl : %s' % context['filtered_model'])
+            logger.info('filtered phot : %s' % context['filtered_photog'])
+            logger.info('filtered even : %s' % context['filtered_event'])
+            logger.info('reverse       : %s' % context['reverse'])
+            logger.info('result images : %s' % batch_data['images'])
 
         return context
 
