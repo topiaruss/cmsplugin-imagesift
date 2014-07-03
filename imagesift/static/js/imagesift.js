@@ -32,7 +32,7 @@ $(document).ready(function(){
         $(window).scrollTop(0);
 
         console.log("AJAX load: "+$(this).attr('href'));
-        //$("#modal").html('');
+        $("#modal").html('');
         
         $("#modal-container").load($(this).attr('href')+" #modal",function(e){
 

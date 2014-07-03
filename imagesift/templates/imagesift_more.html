@@ -24,6 +24,7 @@
     {% endfor %}
 </div>
 
+<div class="clear-fix"></div>
 {% if final_batch %}
 
     {% if not images %}
@@ -48,7 +49,7 @@
     {% endif %}
 
 {% else %}
-
+    
     <div class="more-container">
 
         <a href="{% url 'imagesift:ajax_more' gall=instance.pk %}?gall={{ instance.pk }}&start={{ start }}&back={{ url }}&reverse={{ reverse }}&date={{ date }}&model={{ model }}&photog={{ photog }}"
