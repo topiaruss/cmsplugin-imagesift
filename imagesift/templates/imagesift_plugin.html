@@ -26,7 +26,7 @@
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Photographer</div>
                 <select class="j_filter" name="photog">
-                    <option value="">--</option>
+                    <option value="">Select</option>
                     {% for item in photogs %}
                     <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
                     {% endfor %}
@@ -35,7 +35,7 @@
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Event</div>
                 <select class="j_filter" name="event">
-                    <option value="">--</option>
+                    <option value="">Select</option>
                     {% for item in events %}
                     <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
                     {% endfor %}
@@ -44,7 +44,7 @@
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Camera Model</div>
                 <select class="j_filter" name="model">
-                    <option value="">--</option>
+                    <option value="">Select</option>
                     {% for item in models %}
                     <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
                     {% endfor %}
