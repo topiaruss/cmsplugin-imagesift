@@ -57,8 +57,9 @@
              <div class="gallery-filter">
                 <div class="gallery-filter-label">SORTED:</div>
                 <select class="j_filter" name="reverse">
-                    <option value="" {% if not reverse %}selected="selected"{% endif %}>By Date</option>
-                    <option value="1" {% if reverse %}selected="selected"{% endif %}>Latest First</option>
+                    <option value="" {% if reverse %}selected="selected"{% endif %}>By Date (newest first)</option>
+                    <option value="1" {% if not reverse %}selected="selected"{% endif %}>By Date (oldest first)</option>
+                    
                 </select>
             </div>
         </div>
