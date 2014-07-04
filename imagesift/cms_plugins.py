@@ -65,10 +65,10 @@ class ImagesiftPlugin(CMSPluginBase):
         batch_data = get_batch_context(context['request'], instance, {})
         context.update(batch_data)
         context.update({
-            'dates': [d.isoformat() for d in self.date_digest(batch_data['images'])],
-            'events': self.event_digest(batch_data['images']),
-            'models': self.camera_model_digest(batch_data['images']),
-            'photogs': self.photographer_digest(batch_data['images']),
+            'dates': [d.isoformat() for d in self.date_digest(batch_data['original_imageset'])],
+            'events': self.event_digest(batch_data['original_imageset']),
+            'models': self.camera_model_digest(batch_data['original_imageset']),
+            'photogs': self.photographer_digest(batch_data['original_imageset']),
             'instance': instance,
             'placeholder': placeholder,
             'url':url,

@@ -1,11 +1,14 @@
+import logging
+import urllib
+
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 from django.shortcuts import render_to_response
-
 from models.gallery import GalleryPlugin
 from imagestore.models import Image
-import logging
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +52,9 @@ class ImageView(DetailView):
 
         return context
 
+def url_querystring(**kwargs):
+    return urllib.urlencode(kwargs)
+
 def get_batch_context(request, instance, context={}):
 
     try:
@@ -71,16 +77,19 @@ def get_batch_context(request, instance, context={}):
     limit = (instance.thumbnail_limit if instance.thumbnail_limit else def_limit)
     end = start + limit
     final_batch = end >= len(images)
+    if final_batch:
+        end = len(images)
     ret = images[start:end]
 
     prev_start = start  # so that we can build image detail links back to this current block
     # confusing if we were to continue incrementing after final batch, so advance conditionally
     if not final_batch:
         start = end
-    remaining = len(images) - start
+    remaining = len(images) - end
     old_limit = limit
     limit = min(remaining, limit)
 
+    logger.debug('len images:%s' % request.get_full_path())
     logger.debug('len images:%s' % len(images))
     logger.debug('def limit:%s' % def_limit)
     logger.debug('old_limit:%s' % old_limit)
@@ -93,15 +102,24 @@ def get_batch_context(request, instance, context={}):
     logger.debug('remaining:%s' % remaining)
     logger.debug('reverse:%s' % reverse)
 
+    query = url_querystring(gall=instance.pk, start=start, back=back, reverse=reverse,
+        date=bundle.get('date',''), model=bundle.get('model',''), photog=bundle.get('photog',''))
+
     context.update(dict(instance=instance,
                    back=back,
                    final_batch=final_batch,
                    images=ret,
+                   original_imageset=bundle['original_imageset'],
                    limit=limit,
                    remaining=remaining,
                    prev_start=prev_start,
                    reverse=reverse,
-                   start=start))
+                   start=start,
+                   query=query # let's move over to this, ASAP
+    ))
+
+
+
 
 
     del bundle['images']  # don't want to overwrite the images subset already in context
