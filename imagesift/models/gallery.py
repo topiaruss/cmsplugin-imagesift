@@ -111,6 +111,13 @@ class GalleryPlugin(CMSPlugin):
             qs = [i for i in qs if i.overrideable_photographer() == photog]
             filtered_photog = photog
 
+        mtype = request.GET.get('mtype')
+        filtered_mtype = None
+        if mtype:
+            required_has_video_state = (mtype == 'video')
+            qs = [i for i in qs if i.has_video() == required_has_video_state]
+            filtered_mtype = mtype
+
         # sort before reverse
         qs = self.sort_by_overrideable_date(qs)
 
@@ -127,8 +134,10 @@ class GalleryPlugin(CMSPlugin):
             filtered_event=filtered_event,
             filtered_model=filtered_model,
             filtered_photog=filtered_photog,
+            filtered_mtype=filtered_mtype,
             model=('' if model is None else model),
             photog=('' if photog is None else photog),
+            mtype=('' if mtype is None else mtype),
             reverse=('1' if reverse else '') )
 
         return ret

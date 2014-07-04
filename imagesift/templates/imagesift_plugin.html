@@ -50,7 +50,18 @@
                     {% endfor %}
                 </select>
             </div>
-       
+            {% if mediatypes %}
+                <div class="gallery-filter">
+                    <div class="gallery-filter-label">Media Type</div>
+                    <select class="j_filter" name="mtype">
+                        <option value="">Select</option>
+                        {% for item in mediatypes %}
+                        <option value="{{ item }}" {% if mtype == item %}selected="selected"{% endif %}>{{ item|capfirst }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
         </div>
 
         <div class="gallery-topbar">

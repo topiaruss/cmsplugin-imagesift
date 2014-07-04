@@ -36,6 +36,18 @@ class ImagesiftPlugin(CMSPluginBase):
             photogs.pop(trash, None)
         return sorted(photogs.keys())
 
+    def mediatypes_digest(self, images):
+        """
+        return a list of unique mediatypes, for all the images passed
+        """
+        mtypes = {}
+        for i in images:
+            mtypes.setdefault('video' if i.has_video() else 'photo', None)
+        for trash in ['', None, u'']:
+            mtypes.pop(trash, None)
+        mtypes = {} if len(mtypes) < 2 else mtypes
+        return sorted(mtypes.keys())
+
     def camera_model_digest(self, images):
         """
         return a list of unique cam models, for all the images passed
@@ -69,6 +81,7 @@ class ImagesiftPlugin(CMSPluginBase):
             'events': self.event_digest(batch_data['original_imageset']),
             'models': self.camera_model_digest(batch_data['original_imageset']),
             'photogs': self.photographer_digest(batch_data['original_imageset']),
+            'mediatypes': self.mediatypes_digest(batch_data['original_imageset']),
             'instance': instance,
             'placeholder': placeholder,
             'url':url,
