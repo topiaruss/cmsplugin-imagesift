@@ -76,6 +76,7 @@ class GalleryPlugin(CMSPlugin):
         # there's no way to avoid listing, sorry -- we need to filter on a computed value.
         # OPTIMISE: overrideable date could be replace at the query level with a few hours' work.  Not worth it.
         qs = list(qs)
+        original_imageset = qs
 
         date = request.GET.get('date')
         filtered_date = None
@@ -119,6 +120,7 @@ class GalleryPlugin(CMSPlugin):
 
         ret = dict(
             images=qs,
+            original_imageset=original_imageset,
             date=('' if date is None else date),
             event=('' if event is None else event),
             filtered_date=filtered_date,
