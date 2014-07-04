@@ -55,7 +55,7 @@
                 </div>
 
                 {% if image.has_video %}
-                  {{ image.video_embed_block }} 
+                  {{ image.video_embed_block|safe }}
                 {% else %}
 
                 {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
