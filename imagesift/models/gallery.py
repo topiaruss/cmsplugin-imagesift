@@ -93,11 +93,11 @@ class GalleryPlugin(CMSPlugin):
         model = request.GET.get('model')
         filtered_model = None
         if model:
-            qs = [i for i in qs if i.exif_by_block()['Image']['Model'] == model]
+            qs = [i for i in qs if i.safe_exif_by_block('Image', 'Model') == model]
             accu = []
             for i in qs:
                 try:
-                    if i.exif_by_block()['Image']['Model'] == model:
+                    if i.safe_exif_by_block('Image', 'Model') == model:
                         accu.append(i)
                 except:
                     continue
