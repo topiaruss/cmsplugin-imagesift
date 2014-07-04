@@ -13,7 +13,7 @@
 
         {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?gall={{ instance.pk }}&start={{ prev_start }}&back={{ url }}&reverse={{ reverse }}">
+        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?{{ query }}">
             <img class="preview" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
         </a>
 
@@ -52,11 +52,8 @@
     
     <div class="more-container">
 
-        <a href="{% url 'imagesift:ajax_more' gall=instance.pk %}?gall={{ instance.pk }}&start={{ start }}&back={{ url }}&reverse={{ reverse }}&date={{ date }}&model={{ model }}&photog={{ photog }}"
+        <a href="{% url 'imagesift:ajax_more' gall=instance.pk %}?{{ query }}"
            class="load-more">load next {{ limit }} >></a>
-
-        {# use the remaining value if you want to... #}
-        <div data-items-remaining="{{ remaining }}"></div>
 
     </div>
 
