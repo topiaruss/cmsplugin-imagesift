@@ -97,6 +97,7 @@ def get_batch_context(request, instance, context={}):
                    back=back,
                    final_batch=final_batch,
                    images=ret,
+                   original_imageset=bundle['original_imageset'],
                    limit=limit,
                    remaining=remaining,
                    prev_start=prev_start,
