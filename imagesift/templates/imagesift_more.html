@@ -9,15 +9,18 @@
     {% for image in images %}
     <div class="gallery-thumb">
 
-        {# Change the dimensions for the thumbnail image, as needed. Computed and cached on first use. #}
+        {% if image.has_video %}
+            {{ image.video_embed_block|safe }}
+        {% else %}
+            {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+            <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?{{ query }}">
+                <img class="preview" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
+            </a>
 
-        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?{{ query }}">
-            <img class="preview" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
-        </a>
+            {% endthumbnail %}
+        {% endif %}
 
-        {% endthumbnail %}
         <div class="caption">{{ image.overrideable_photographer|default:"untitled" }}<div class="caption-more">view <img src="/static/img/gallery/view-plus.gif" /></div></div>
 
     </div>
