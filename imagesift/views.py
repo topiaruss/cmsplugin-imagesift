@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response
 
 from models.gallery import GalleryPlugin
 from imagestore.models import Image
+import logging
+logger = logging.getLogger(__name__)
 
 
 class ImageView(DetailView):
@@ -55,14 +57,14 @@ def get_batch_context(request, instance, context={}):
         start = 0
 
     try:
-        reverse = request.GET.get('reverse', u'')
-        reverse = reverse and int(reverse)>1 and reverse not in [u'false', u'False']
+        reverse = request.GET.get('reverse', u'1')
+        reverse = reverse and int(reverse)>0 and reverse not in [u'false', u'False']
     except:
-        reverse = False
+        reverse = True
 
     back = request.GET.get('back', '')
 
-    bundle = instance.get_filtered_queryset_bundle(request)
+    bundle = instance.get_filtered_queryset_bundle(request, reverse)
     images = bundle['images']
 
     def_limit = settings.IMAGESIFT_DEFAULT_LIMIT_AJAX_MORE
@@ -74,9 +76,22 @@ def get_batch_context(request, instance, context={}):
     prev_start = start  # so that we can build image detail links back to this current block
     # confusing if we were to continue incrementing after final batch, so advance conditionally
     if not final_batch:
-        start += end
+        start = end
     remaining = len(images) - start
+    old_limit = limit
     limit = min(remaining, limit)
+
+    logger.debug('len images:%s' % len(images))
+    logger.debug('def limit:%s' % def_limit)
+    logger.debug('old_limit:%s' % old_limit)
+    logger.debug('limit:%s' % limit)
+    logger.debug('prev_start:%s' % prev_start)
+    logger.debug('end:%s' % end)
+    logger.debug('final_batch:%s' % final_batch)
+    logger.debug('len ret:%s' % len(ret))
+    logger.debug('start:%s' % start)
+    logger.debug('remaining:%s' % remaining)
+    logger.debug('reverse:%s' % reverse)
 
     context.update(dict(instance=instance,
                    back=back,
@@ -87,6 +102,7 @@ def get_batch_context(request, instance, context={}):
                    prev_start=prev_start,
                    reverse=reverse,
                    start=start))
+
 
     del bundle['images']  # don't want to overwrite the images subset already in context
 

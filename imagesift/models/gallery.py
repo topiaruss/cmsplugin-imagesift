@@ -64,7 +64,7 @@ class GalleryPlugin(CMSPlugin):
             next = images.get(id__exact=immap[next])
         return prev, next
 
-    def get_filtered_queryset_bundle(self, request):
+    def get_filtered_queryset_bundle(self, request, reverse):
         """
         this is called from a view, and uses request variables to filter the return set, returning
         the salient variables. This means that we should be able to get away with adding filters just by
@@ -114,7 +114,6 @@ class GalleryPlugin(CMSPlugin):
         qs = self.sort_by_overrideable_date(qs)
 
         # reverse after sort
-        reverse = request.GET.get('reverse')
         if reverse:
             qs.reverse()
 
@@ -128,6 +127,6 @@ class GalleryPlugin(CMSPlugin):
             filtered_photog=filtered_photog,
             model=('' if model is None else model),
             photog=('' if photog is None else photog),
-            reverse=('' if reverse is None else reverse) )
+            reverse=('1' if reverse else '') )
 
         return ret
