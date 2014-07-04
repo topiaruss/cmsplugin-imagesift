@@ -54,6 +54,10 @@
                   
                 </div>
 
+                {% if image.has_video %}
+                  {{ image.video_embed_block }} 
+                {% else %}
+
                 {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
                 {% thumbnail image.image geometry crop="center" as im %}
 
@@ -61,7 +65,8 @@
 
                 {% endthumbnail %}
 
-          
+                {% endif %}
+
                 <div id="modal-meta">
 
                   <div class="meta-col">
