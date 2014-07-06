@@ -4,10 +4,11 @@ import logging
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from cms.models.pluginmodel import CMSPlugin
 from imagestore.models import Image
 from tagging.models import TaggedItem
+from django.conf import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +18,14 @@ class GalleryPlugin(CMSPlugin):
         abstract = False
         app_label = 'imagesift'
 
-    thumbnail_geometry = models.CharField(max_length=50, default='241',
-                                          help_text=_('Examples: "50x30", "50", "x30"'))
+    thumbnail_geometry = models.CharField(max_length=50, default=settings.IMAGESIFT_DEFAULT_GALLERY_THUMBNAIL_SPEC,
+                                          help_text=_('Examples: "50x30", "50", "x30". "%s" is usual' %
+                                                      settings.IMAGESIFT_DEFAULT_GALLERY_THUMBNAIL_SPEC))
     thumbnail_limit = models.IntegerField(default=20,
                                           help_text=_('Maximum count of items in a batch. 0 means no limit.'))
-    image_geometry = models.CharField(max_length=50, default='x470',
-                                      help_text=_('Examples: "600x400", "600", "x400"'))
+    image_geometry = models.CharField(max_length=50, default=settings.IMAGESIFT_DEFAULT_GALLERY_DETAIL_SPEC,
+                                      help_text=_('Examples: "600x400", "600", "x400". "%s" is usual' %
+                                                      settings.IMAGESIFT_DEFAULT_GALLERY_DETAIL_SPEC))
     filter = models.TextField(help_text=_('Items matching ALL these tags will be shown. One tag per line.'))
 
     def get_images_queryset(self):
