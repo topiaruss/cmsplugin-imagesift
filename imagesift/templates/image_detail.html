@@ -70,27 +70,27 @@
                 <div id="modal-meta">
 
                   <div class="meta-col">
-                  {{ image.overrideable_photographer }}<br>
-                  {{ image.event_name }}<br>
-                  Date: {{ image.overrideable_date }}
+                  {{ image.overrideable_photographer|default:"Photographer unknown" }}<br>
+                  {{ image.event_name|default:"Event unknown" }}<br>
+                  Date: {{ image.overrideable_date|default:"n/a" }}
                   </div>
 
                   <div class="meta-col">
-                  Image Description:<br>
-                  Make: {{ image.exif_by_block.Image.Make }} <br>
-                  Model: {{ image.exif_by_block.Image.Model }}
+                  Image Description: {{ image.image_description|default:"n/a" }}<br>
+                  Make: {{ image.exif_by_block.Image.Make|default:"n/a" }} <br>
+                  Model: {{ image.exif_by_block.Image.Model|default:"n/a" }}
                   </div>
 
                   <div class="meta-col">
-                  Exposure Time: {{ image.exif_by_block.EXIF.ExposureTime }}<br>
-                  Aperture: {{ image.exif_by_block.EXIF.ApertureValue }}<br>
-                  ISO Speed: {{ image.exif_by_block.EXIF.ISOSpeedRatings }}
+                  Exposure Time: {{ image.exif_by_block.EXIF.ExposureTime|default:"n/a" }}<br>
+                  Aperture: {{ image.exif_by_block.EXIF.ApertureValue|default:"n/a" }}<br>
+                  ISO Speed: {{ image.exif_by_block.EXIF.ISOSpeedRatings|default:"n/a" }}
                   </div>
 
                   <div class="meta-col">
-                  Metering Mode: {{ image.exif_by_block.EXIF.MeteringMode }}<br>
-                  Flash: {{ image.exif_by_block.EXIF.Flash }}<br>
-                  Focal Length: {{ image.exif_by_block.EXIF.FocalLength }}
+                  Metering Mode: {{ image.exif_by_block.EXIF.MeteringMode|default:"n/a" }}<br>
+                  Flash: {{ image.exif_by_block.EXIF.Flash|default:"n/a" }}<br>
+                  Focal Length: {{ image.exif_by_block.EXIF.FocalLength|default:"n/a" }}
                   </div>
 
                 </div>

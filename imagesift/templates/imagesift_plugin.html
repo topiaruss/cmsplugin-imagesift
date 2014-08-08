@@ -23,6 +23,7 @@
             <div class="gallery-filter">
                 <div class="gallery-filter-label filter-label">FILTER BY:</div>
             </div>
+            {% if photogs %}
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Photographer</div>
                 <select class="j_filter" name="photog">
@@ -32,6 +33,8 @@
                     {% endfor %}
                 </select>
             </div>
+            {% endif %}
+            {% if events %}
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Event</div>
                 <select class="j_filter" name="event">
@@ -41,6 +44,8 @@
                     {% endfor %}
                 </select>
             </div>
+            {% endif %}
+            {% if models %}
             <div class="gallery-filter">
                 <div class="gallery-filter-label">Camera Model</div>
                 <select class="j_filter" name="model">
@@ -50,6 +55,7 @@
                     {% endfor %}
                 </select>
             </div>
+            {% endif %}
             {% if mediatypes %}
                 <div class="gallery-filter">
                     <div class="gallery-filter-label">Media Type</div>
