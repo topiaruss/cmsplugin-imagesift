@@ -4,57 +4,59 @@
 
 {# We presume that js and css are already defined in the context of this block, hence no sekizai #}
 
-<div class="gallery-container">
+<div class="gallery-images">
+    <div class="gallery-container">
 
-    {% for image in images %}
-    <div class="gallery-thumb">
+        {% for image in images %}
+        <div class="gallery-thumb">
 
-        {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
+            {% thumbnail image.image instance.thumbnail_geometry crop="center" as im %}
 
-        <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?{{ query }}">
-            <img class="preview" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
-        </a>
+            <a class="thumb" href="{% url 'imagesift:image' pk=image.pk %}?{{ query }}">
+                <img class="preview" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" />
+            </a>
 
-        {% endthumbnail %}
+            {% endthumbnail %}
 
-        <div class="caption">{{ image.overrideable_photographer }}<div class="caption-more">view <img src="/static/img/gallery/view-plus.gif" /></div></div>
+            <div class="caption">{{ image.overrideable_photographer }}<div class="caption-more">view <img src="/static/img/gallery/view-plus.gif" /></div></div>
 
-    </div>
-    {% endfor %}
-</div>
-
-<div class="clear-fix"></div>
-{% if final_batch %}
-
-    {% if not images %}
-
-        {# in this case, there were no images in the current batch meaning it's an EMPTY first AND final batch. #}
-
-        <div class="more-container">
-            <div class="status-message">
-                No images here yet.
-            </div>
         </div>
+        {% endfor %}
+    </div>
+
+    <div class="clear-fix"></div>
+    {% if final_batch %}
+
+        {% if not images %}
+
+            {# in this case, there were no images in the current batch meaning it's an EMPTY first AND final batch. #}
+
+            <div class="more-container">
+                <div class="status-message">
+                    No images here yet.
+                </div>
+            </div>
+
+        {% else %}
+
+            {# in this case, there were images in the current batch, but this is the final batch. #}
+            <div class="more-container">
+                <div class="status-message">
+                    No more images.
+                </div>
+            </div>
+
+        {% endif %}
 
     {% else %}
-
-        {# in this case, there were images in the current batch, but this is the final batch. #}
+        
         <div class="more-container">
-            <div class="status-message">
-                No more images.
-            </div>
+
+            <a href="{% url 'imagesift:ajax_more' gall=instance.pk %}?{{ query }}"
+               class="load-more">load next {{ limit }} >></a>
+
         </div>
 
     {% endif %}
-
-{% else %}
-    
-    <div class="more-container">
-
-        <a href="{% url 'imagesift:ajax_more' gall=instance.pk %}?{{ query }}"
-           class="load-more">load next {{ limit }} >></a>
-
-    </div>
-
-{% endif %}
+</div>
 

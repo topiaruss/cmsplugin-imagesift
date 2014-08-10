@@ -103,7 +103,7 @@ def get_batch_context(request, instance, context={}):
     logger.debug('reverse:%s' % reverse)
 
     query = url_querystring(gall=instance.pk, start=start, back=back, reverse=reverse,
-        date=bundle.get('date',''), model=bundle.get('model',''), photog=bundle.get('photog',''))
+        date=bundle.get('date',''), model=bundle.get('model',''), photog=bundle.get('photog',''), event=bundle.get('event',''))
 
     context.update(dict(instance=instance,
                    back=back,

@@ -26,6 +26,7 @@ class GalleryPlugin(CMSPlugin):
     image_geometry = models.CharField(max_length=50, default=settings.IMAGESIFT_DEFAULT_GALLERY_DETAIL_SPEC,
                                       help_text=_('Examples: "600x400", "600", "x400". "%s" is usual' %
                                                       settings.IMAGESIFT_DEFAULT_GALLERY_DETAIL_SPEC))
+    show_filters = models.BooleanField(default=True, help_text=_('Untick this box to hide the filters on the left hand side.  This allows for galleries to be embedded on event pages'))
     filter = models.TextField(help_text=_('Items matching ALL these tags will be shown. One tag per line.'))
 
     def get_images_queryset(self):

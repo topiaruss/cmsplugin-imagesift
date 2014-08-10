@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ImagesiftPlugin(CMSPluginBase):
     model = GalleryPlugin
-    name = _('Imagesift Plugin')
+    name = _('Gallery Plugin')
     render_template = "imagesift_plugin.html"
     cache = False       # Important because we change response depending on the request, not just the instance.
 

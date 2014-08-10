@@ -17,58 +17,60 @@
 
 <div id="master-gallery">
     <form id="filter" method="get" action="">
-        <div class="gallery-sidebar">
-            
-           
-            <div class="gallery-filter">
-                <div class="gallery-filter-label filter-label">FILTER BY:</div>
-            </div>
-            {% if photogs %}
-            <div class="gallery-filter">
-                <div class="gallery-filter-label">Photographer</div>
-                <select class="j_filter" name="photog">
-                    <option value="">Select</option>
-                    {% for item in photogs %}
-                    <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-            {% if events %}
-            <div class="gallery-filter">
-                <div class="gallery-filter-label">Event</div>
-                <select class="j_filter" name="event">
-                    <option value="">Select</option>
-                    {% for item in events %}
-                    <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-            {% if models %}
-            <div class="gallery-filter">
-                <div class="gallery-filter-label">Camera Model</div>
-                <select class="j_filter" name="model">
-                    <option value="">Select</option>
-                    {% for item in models %}
-                    <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-            {% if mediatypes %}
+        {% if instance.show_filters %}
+            <div class="gallery-sidebar">
+                
+               
                 <div class="gallery-filter">
-                    <div class="gallery-filter-label">Media Type</div>
-                    <select class="j_filter" name="mtype">
+                    <div class="gallery-filter-label filter-label">FILTER BY:</div>
+                </div>
+                {% if photogs %}
+                <div class="gallery-filter">
+                    <div class="gallery-filter-label">Photographer</div>
+                    <select class="j_filter" name="photog">
                         <option value="">Select</option>
-                        {% for item in mediatypes %}
-                        <option value="{{ item }}" {% if mtype == item %}selected="selected"{% endif %}>{{ item|capfirst }}</option>
+                        {% for item in photogs %}
+                        <option value="{{ item }}" {% if photog == item %}selected="selected"{% endif %}>{{ item }}</option>
                         {% endfor %}
                     </select>
                 </div>
-            {% endif %}
+                {% endif %}
+                {% if events %}
+                <div class="gallery-filter">
+                    <div class="gallery-filter-label">Event</div>
+                    <select class="j_filter" name="event">
+                        <option value="">Select</option>
+                        {% for item in events %}
+                        <option value="{{ item }}" {% if event == item %}selected="selected"{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if models %}
+                <div class="gallery-filter">
+                    <div class="gallery-filter-label">Camera Model</div>
+                    <select class="j_filter" name="model">
+                        <option value="">Select</option>
+                        {% for item in models %}
+                        <option value="{{ item }}" {% if model == item %}selected="selected"{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                {% if mediatypes %}
+                    <div class="gallery-filter">
+                        <div class="gallery-filter-label">Media Type</div>
+                        <select class="j_filter" name="mtype">
+                            <option value="">Select</option>
+                            {% for item in mediatypes %}
+                            <option value="{{ item }}" {% if mtype == item %}selected="selected"{% endif %}>{{ item|capfirst }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
 
-        </div>
+            </div>
+        {% endif %}
 
         <div class="gallery-topbar">
              <div class="gallery-filter">
