@@ -5,107 +5,108 @@
 {% load sekizai_tags %}
 
 {% block title %}
-        {% if image.title %}
-            {{ image.title }}
-        {% else %}
-            image
-        {% endif %}
+{% if image.title %}
+{{ image.title }}
+{% else %}
+image
+{% endif %}
 
-        {% if image.overrideable_photographer %}
-            {% trans "by" %}{{ image.overrideable_photographer }}
-        {% endif %}
+{% if image.overrideable_photographer %}
+{% trans "by" %}{{ image.overrideable_photographer }}
+{% endif %}
 {% endblock title %}
 
 {% block content %}
 
-    {# Sekizai makes us put these Addtoblocks INSIDE the block content tag #}
+{# Sekizai makes us put these Addtoblocks INSIDE the block content tag #}
 
-    {% addtoblock "css" %}
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
-        <style type="text/css">
-            /* css for this detail template only*/
-        </style>
-    {% endaddtoblock %}
+{% addtoblock "css" %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/imagesift.css">
+<style type="text/css">
+    /* css for this detail template only*/
+</style>
+{% endaddtoblock %}
 
-    {% addtoblock "js" %}
-        <script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
-        <script type="text/javascript">
-            /* js for this template only */
-        </script>
-    {% endaddtoblock %}
-
-
-    <main class="black">
-      <div id="main-sub" >
-        <div id="content" class="gallery detail">
-          <div id="modal-container">
-            <div id="modal" class="visible">
-              <div id="modal-sub">
-
-                <div id="modal-controls">
-                  <a id="close-modal" href="#">close x</a>
-                  {% if prev != None %}
-                      <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-previous" class="gallery-nav"></a>
-                  {% endif %}
-                  {% if next != None %}
-                      <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-next" class="gallery-nav"></a>
-                  {% endif %}
-                 
-                  
-                </div>
-
-                {% if image.has_video %}
-                  {{ image.video_embed_block|safe }}
-                {% else %}
-
-                {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
-                {% thumbnail image.image geometry crop="center" as im %}
-
-                    <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %} width="{{ im.width }}" height="{{ im.height }}"/>
-
-                {% endthumbnail %}
-
-                {% endif %}
-
-                <div id="modal-meta">
-
-                  <div class="meta-col">
-                  {{ image.overrideable_photographer|default:"Photographer unknown" }}<br>
-                  {{ image.event_name|default:"Event unknown" }}<br>
-                  Date: {{ image.overrideable_date|default:"n/a" }}
-                  </div>
-
-                  <div class="meta-col">
-                  Image Description: {{ image.image_description|default:"n/a" }}<br>
-                  Make: {{ image.exif_by_block.Image.Make|default:"n/a" }} <br>
-                  Model: {{ image.exif_by_block.Image.Model|default:"n/a" }}
-                  </div>
-
-                  <div class="meta-col">
-                  Exposure Time: {{ image.exif_by_block.EXIF.ExposureTime|default:"n/a" }}<br>
-                  Aperture: {{ image.exif_by_block.EXIF.ApertureValue|default:"n/a" }}<br>
-                  ISO Speed: {{ image.exif_by_block.EXIF.ISOSpeedRatings|default:"n/a" }}
-                  </div>
-
-                  <div class="meta-col">
-                  Metering Mode: {{ image.exif_by_block.EXIF.MeteringMode|default:"n/a" }}<br>
-                  Flash: {{ image.exif_by_block.EXIF.Flash|default:"n/a" }}<br>
-                  Focal Length: {{ image.exif_by_block.EXIF.FocalLength|default:"n/a" }}
-                  </div>
-
-                </div>
+{% addtoblock "js" %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/imagesift.js"></script>
+<script type="text/javascript">
+    /* js for this template only */
+</script>
+{% endaddtoblock %}
 
 
-              </div>
-            </div>
+<main class="black">
+  <div id="main-sub" >
+    <div id="content" class="gallery detail">
+      <div id="modal-container">
+        <div id="modal" class="visible">
+          <div id="modal-sub">
+
+            <div id="modal-controls">
+              <a id="close-modal" href="#">close x</a>
+              {% if next != None %}
+              <a href="{% url 'imagesift:image' pk=next.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-previous" class="gallery-nav"></a>
+              {% endif %}
+              {% if prev != None %}
+              <a href="{% url 'imagesift:image' pk=prev.id %}?gall={{ gall_plugin.id }}&back={{ back }}" id="gallery-next" class="gallery-nav"></a>
+              {% endif %}
+
 
           </div>
-        </div>
-        
+
+          {% if image.has_video %}
+              <div class="modal-video">{{ image.video_embed_block|safe }}</div>
+          {% else %}
+
+              {# just change the dimensions for the cropped image, as needed. Computed and cached on first use. #}
+              {% thumbnail image.image geometry crop="center" as im %}
+
+                  <img class="preview" src="{{ im.url }}" {% if image.title %} alt="{{ image.title }}" {% endif %} width="{{ im.width }}" height="{{ im.height }}"/>
+
+              {% endthumbnail %}
+
+              <div id="modal-meta">
+
+                  <div class="meta-col">
+                      {{ image.overrideable_photographer|default:"Photographer unknown" }}<br>
+                      {{ image.event_name|default:"Event unknown" }}<br>
+                      Date: {{ image.overrideable_date|default:"n/a" }}
+                  </div>
+
+                  <div class="meta-col">
+                      Image Description: {{ image.image_description|default:"n/a" }}<br>
+                      Make: {{ image.exif_by_block.Image.Make|default:"n/a" }} <br>
+                      Model: {{ image.exif_by_block.Image.Model|default:"n/a" }}
+                  </div>
+
+                  <div class="meta-col">
+                      Exposure Time: {{ image.exif_by_block.EXIF.ExposureTime|default:"n/a" }}<br>
+                      Aperture: {{ image.exif_by_block.EXIF.ApertureValue|default:"n/a" }}<br>
+                      ISO Speed: {{ image.exif_by_block.EXIF.ISOSpeedRatings|default:"n/a" }}
+                  </div>
+
+                  <div class="meta-col">
+                      Metering Mode: {{ image.exif_by_block.EXIF.MeteringMode|default:"n/a" }}<br>
+                      Flash: {{ image.exif_by_block.EXIF.Flash|default:"n/a" }}<br>
+                      Focal Length: {{ image.exif_by_block.EXIF.FocalLength|default:"n/a" }}
+                  </div>
+
+              </div>
+
+          {% endif %}
 
         <div class="clear-fix"></div>
 
       </div>
-      
-    </main>
+  </div>
+
+</div>
+</div>
+
+
+<div class="clear-fix"></div>
+
+</div>
+
+</main>
 {% endblock content %}

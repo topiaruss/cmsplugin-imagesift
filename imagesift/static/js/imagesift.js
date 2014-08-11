@@ -30,6 +30,7 @@ $(document).ready(function(){
 
         $("#modal").show();
         $(window).scrollTop(0);
+        $("#gallery-images").removeClass('gallery-images');
 
         console.log("AJAX load: "+$(this).attr('href'));
         $("#modal").html('');
@@ -54,10 +55,12 @@ $(document).ready(function(){
 
     $(document).on('click', '#close-modal', function(e) {
         console.log("close modal"); 
+        var url = $('#player').attr('src');
+        $('#player').attr('src', '');
         e.preventDefault();
         $("main").removeClass('black');
         $("#modal").hide();
-        
+        $("#gallery-images").addClass('gallery-images');
     });
 
     $(document).on('click', '.load-more', function(e) {
